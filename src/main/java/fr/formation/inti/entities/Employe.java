@@ -14,7 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+//github c'est de la merde !!!!!
 @Entity
 @Table(name = "employe", catalog = "tousenvacancesbd")
 public class Employe implements java.io.Serializable {
