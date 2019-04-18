@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: gestion-congeSB
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: IN-ST-005
+Implementation-Vendor-Id: fr.formation.inti
+Build-Jdk: 1.8.0_201
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/gestion-congeSB
+Created-By: Maven Integration for Eclipse
+
