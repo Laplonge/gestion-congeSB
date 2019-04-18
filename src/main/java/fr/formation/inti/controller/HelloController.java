@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import fr.formation.inti.dao.IEmployeDao;
 import fr.formation.inti.entities.Employe;
+import fr.formation.inti.services.interfaces.IEmployeService;
 
 @Controller
 public class HelloController {
@@ -21,13 +22,13 @@ public class HelloController {
 	}
 	
 	@Autowired
-	IEmployeDao dao;
+	IEmployeService es;
 	
 	@ResponseBody
 	@RequestMapping("/employes")
 	public String employes() {
 		String html = "";
-		for( Employe e : dao.findAll()) {
+		for( Employe e : es.getAll()) {
 			html += e + "<hr>";
 		}
 		return html;
@@ -37,6 +38,7 @@ public class HelloController {
 	@RequestMapping("/employebyid")
 	public String employeById(@RequestParam("id") Integer id) {
 
-		return " "+dao.findById(id);
+		return " "+es.findById(id);
 	}
+	
 }
