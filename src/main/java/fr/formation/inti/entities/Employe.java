@@ -30,6 +30,7 @@ public class Employe implements java.io.Serializable {
 //	voir commentaire à la fin
 //	private Set<Conge> conges = new HashSet<Conge>(0);
 //	private Compte compte = new Compte();
+	private Integer joursCongeRestant;
 	
 	private Employe manager;
 	private Set<Employe> subordones = new HashSet<Employe>();
@@ -138,6 +139,15 @@ public class Employe implements java.io.Serializable {
 		this.subordones = subordones;
 	}
 	
+	@Column(name="JOURS_CONGE_RESTANT")
+	public Integer getJoursCongeRestant() {
+		return joursCongeRestant;
+	}
+
+	public void setJoursCongeRestant(Integer joursCongeRestant) {
+		this.joursCongeRestant = joursCongeRestant;
+	}
+
 	@Override
 	public String toString() {
 		return "Employe [idEmploye=" + idEmploye + ", prenom=" + prenom + ", nom=" + nom + ", grade=" + grade + ", manager=" + manager.getNom() + "]";

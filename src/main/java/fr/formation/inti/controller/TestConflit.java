@@ -13,8 +13,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fr.formation.inti.entities.Conge;
-import fr.formation.inti.service.interfaces.ICongeService;
-import fr.formation.inti.service.interfaces.IEmployeService;
+import fr.formation.inti.services.interfaces.ICongeService;
+import fr.formation.inti.services.interfaces.IEmployeService;
 
 public class TestConflit {
 	private static final Log log = LogFactory.getLog(TestConflit.class);
