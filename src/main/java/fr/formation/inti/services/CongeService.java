@@ -41,4 +41,8 @@ public class CongeService implements ICongeService{
 	public List<Conge> getStartDate(Date date) {
 		return congeDao.getStartDate(date);
 	}
+	
+	public List<Conge> getUnavailableDate() {
+		return congeDao.getUnavailableDate();
+	}
 }
