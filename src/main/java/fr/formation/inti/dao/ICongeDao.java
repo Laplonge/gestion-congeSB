@@ -10,9 +10,11 @@ import org.springframework.data.repository.query.Param;
 import fr.formation.inti.entities.Conge;
 
 public interface ICongeDao extends JpaRepository<Conge, Integer> {
-	
-	@Query(value="SELECT * FROM conge", nativeQuery = true)
-	List<Conge> getStartDate(Date date);
-	// WHERE date_debut > :date AND statut_de_la_demande = 'en cours';", nativeQuery = true
-	//@Param(value="date")
+	//@Query(nativeQuery = true, value = "SELECT * FROM conge c")
+	//@Query(nativeQuery = true, value = "SELECT * FROM Conge c WHERE c.date_Debut > :date")
+	@Query(nativeQuery = true, value = "SELECT * FROM Conge c WHERE c.date_Debut > :date AND c.statut_De_La_Demande = 'en cours'")
+	List<Conge> getStartDate(@Param("date")Date date);
+	//List<Conge> getStartDate();
 }
+
+
