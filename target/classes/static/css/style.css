@@ -1,0 +1,17 @@
+@charset "ISO-8859-1";
+
+body {
+	background-color: lightblue;
+	color: navy;
+}
+div {
+/* 	width: 20%; */
+/* 	position: absolute; */
+/* 	left: 30%; */
+	border: solid green 2px;
+	padding: 50px;
+}
+.error {
+	color: red;
+	font-family: fantasy;
+}
