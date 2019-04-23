@@ -8,7 +8,7 @@ import fr.formation.inti.entities.Conge;
 
 public interface ICongeService extends IGenericService<Conge>{
 
-	List<Conge> getStartDate(Date date);
+	List<Conge> getCongeStartDate(Date date);
 	List<Conge> getUnavailableDate();
 
 }

@@ -38,8 +38,8 @@ public class CongeService implements ICongeService{
 		congeDao.delete(persistentObject);
 	}
 	
-	public List<Conge> getStartDate(Date date) {
-		return congeDao.getStartDate(date);
+	public List<Conge> getCongeStartDate(Date date) {
+		return congeDao.getCongeStartDate(date);
 	}
 	
 	public List<Conge> getUnavailableDate() {

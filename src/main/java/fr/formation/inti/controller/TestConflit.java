@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -37,9 +39,47 @@ public class TestConflit  {
 //			html += "" + c.getIdConge() + "<br>";
 //		}
 		List<Conge> Unav = cs.getUnavailableDate();
-		for (Conge c : Unav)
-			html += "Date début: " + c.getDateDebut() + " Date de Fin: " + c.getDateFin() + "<br>";
-		return html;
+		for (Conge c : Unav) {
+			html += "Date début: " + c.getDateDebut() + " Date de Fin: " + c.getDateFin() + "<br>";		
+		}
+		html += "<br>";
+		html += "-----------------------------";
+		html += "<br>";	
+		html += "<br>";		
+		
+		for(int i = 0; i<Unav.size()-1; i++) {
+			int interval = (int) ChronoUnit.DAYS.between(((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),((java.sql.Date) Unav.get(i+1).getDateDebut()).toLocalDate());
+			html += "Date fin item " + i + " : " + Unav.get(i).getDateFin() + " // Date debut item " + (i+1) + " : " + Unav.get(i+1).getDateDebut() + " // Durée de la periode : " + interval + "<br>";
+		}
+		
+		html += "<br>";
+		html += "-----------------------------";
+		html += "<br>";	
+		html += "<br>";		
+
+		Date current = new Date();
+		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
+		List<Conge> Demande = cs.getCongeStartDate(sqlcurrent);
+		
+		for(Conge dem : Demande) {
+			html += "Nom de l'employe : " + dem.getEmploye().getNom() + " Date de debut: " + dem.getDateDebut() + " Date de fin: " + dem.getDateFin() + "<br>";
+			for(int i = 0; i<Unav.size()-1; i++) {
+				int interval = (int) ChronoUnit.DAYS.between(((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),((java.sql.Date) Unav.get(i+1).getDateDebut()).toLocalDate());
+				int demvac = (int) ChronoUnit.DAYS.between(((java.sql.Date) dem.getDateDebut()).toLocalDate(),((java.sql.Date) dem.getDateFin()).toLocalDate());
+				if(interval < demvac )
+				html += dem.getEmploye().getNom()+ " Interval trop petit, " +  demvac + "<br>";
+				else {
+				LocalDate datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1);
+				dem.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+				datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
+				dem.setDateFin(java.sql.Date.valueOf(datedebutprop));
+				dem.setStatutDeLaDemande("Proposition");
+				cs.save(dem);
+				html += "Nom: " + dem.getEmploye().getNom()+ " Date de début: " + dem.getDateDebut() + " Date de fin: " + dem.getDateFin() + " Nouveau Statut: " + dem.getStatutDeLaDemande() + "<br>";
+				}
+			}
+		}
+		return html;	
 	}
 }
 // List<Conge> html = cs.getStartDate();
