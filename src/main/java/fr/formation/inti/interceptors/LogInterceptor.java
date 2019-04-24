@@ -18,9 +18,9 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         long startTime = System.currentTimeMillis();
-        System.out.println("\n-------- LogInterception.preHandle --- ");
-        System.out.println("Request URL: " + request.getRequestURL());
-        System.out.println("Start Time: " + System.currentTimeMillis());
+        log.info("\n-------- LogInterception.preHandle --- ");
+        log.info("Request URL: " + request.getRequestURL());
+        log.info("Start Time: " + System.currentTimeMillis());
  
         request.setAttribute("startTime", startTime);
           
@@ -30,8 +30,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
             ModelAndView modelAndView) throws Exception {
-    	System.out.println("\n-------- LogInterception.postHandle --- ");
-    	System.out.println("Request URL: " + request.getRequestURL());
+    	log.info("\n-------- LogInterception.postHandle --- ");
+    	log.info("Request URL: " + request.getRequestURL());
  
         // You can add attributes in the modelAndView
         // and use that in the view page
@@ -40,14 +40,14 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
-    	System.out.println("\n-------- LogInterception.afterCompletion --- ");
+    	log.info("\n-------- LogInterception.afterCompletion --- ");
  
         long startTime = (Long) request.getAttribute("startTime");
         long endTime = System.currentTimeMillis();
-        System.out.println("Request URL: " + request.getRequestURL());
-        System.out.println("End Time: " + endTime);
+        log.info("Request URL: " + request.getRequestURL());
+        log.info("End Time: " + endTime);
  
-        System.out.println("Time Taken: " + (endTime - startTime));
+        log.info("Time Taken: " + (endTime - startTime));
     }
  
 }
