@@ -8,6 +8,7 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,7 +24,7 @@ import fr.formation.inti.services.interfaces.ICongeService;
 import fr.formation.inti.services.interfaces.IEmployeService;
 
 @Controller
-public class TestConflit  {
+public class TestConflit {
 	private static final Log log = LogFactory.getLog(TestConflit.class);
 	@Autowired
 	IEmployeService es;
@@ -40,48 +41,83 @@ public class TestConflit  {
 //		}
 		List<Conge> Unav = cs.getUnavailableDate();
 		for (Conge c : Unav) {
-			html += "Date début: " + c.getDateDebut() + " Date de Fin: " + c.getDateFin() + "<br>";		
+			html += "Date début: " + c.getDateDebut() + " Date de Fin: " + c.getDateFin() + "<br>";
 		}
 		html += "<br>";
 		html += "-----------------------------";
-		html += "<br>";	
-		html += "<br>";		
-		
-		for(int i = 0; i<Unav.size()-1; i++) {
-			int interval = (int) ChronoUnit.DAYS.between(((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),((java.sql.Date) Unav.get(i+1).getDateDebut()).toLocalDate());
-			html += "Date fin item " + i + " : " + Unav.get(i).getDateFin() + " // Date debut item " + (i+1) + " : " + Unav.get(i+1).getDateDebut() + " // Durée de la periode : " + interval + "<br>";
-		}
-		
 		html += "<br>";
-		html += "-----------------------------";
-		html += "<br>";	
-		html += "<br>";		
-
-		Date current = new Date();
-		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
-		List<Conge> Demande = cs.getCongeStartDate(sqlcurrent);
+		html += "<br>";
 		
-		for(Conge dem : Demande) {
-			html += "Nom de l'employe : " + dem.getEmploye().getNom() + " Date de debut: " + dem.getDateDebut() + " Date de fin: " + dem.getDateFin() + "<br>";
-			for(int i = 0; i<Unav.size()-1; i++) {
-				int interval = (int) ChronoUnit.DAYS.between(((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),((java.sql.Date) Unav.get(i+1).getDateDebut()).toLocalDate());
-				int demvac = (int) ChronoUnit.DAYS.between(((java.sql.Date) dem.getDateDebut()).toLocalDate(),((java.sql.Date) dem.getDateFin()).toLocalDate());
-				if(interval < demvac )
-				html += dem.getEmploye().getNom()+ " Interval trop petit, " +  demvac + "<br>";
-				else {
-				LocalDate datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1);
-				dem.setDateDebut(java.sql.Date.valueOf(datedebutprop));
-				datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
-				dem.setDateFin(java.sql.Date.valueOf(datedebutprop));
-				dem.setStatutDeLaDemande("Proposition");
-				cs.save(dem);
-				html += "Nom: " + dem.getEmploye().getNom()+ " Date de début: " + dem.getDateDebut() + " Date de fin: " + dem.getDateFin() + " Nouveau Statut: " + dem.getStatutDeLaDemande() + "<br>";
-				}
-			}
-		}
-		return html;	
+		Optional<Employe> emp = es.findById(16);
+		emp.get().setUrlPhoto("../photos/uzi.jpg");
+		es.save((Employe)emp.get());
+		return html += "<img src=\"" + emp.get().getUrlPhoto() + "\"/>";
+		//return html += "<img src= \"/gestion-congeSB/src/main/resources/photos/pikachu.jpg\"/>";
+		//return html += "<img src= \"../photos/pikachu.jpg\"/>";
+		
 	}
 }
+//		for (int i = 0; i < Unav.size() - 1; i++) {
+//			int interval = (int) ChronoUnit.DAYS.between(
+//					((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),
+//					((java.sql.Date) Unav.get(i + 1).getDateDebut()).toLocalDate());
+//			html += "Date fin item " + i + " : " + Unav.get(i).getDateFin() + " // Date debut item " + (i + 1) + " : "
+//					+ Unav.get(i + 1).getDateDebut() + " // Durée de la periode : " + interval + "<br>";
+//		}
+//
+//		html += "<br>";
+//		html += "-----------------------------";
+//		html += "<br>";
+//		html += "<br>";
+//
+//		Date current = new Date();
+//		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
+//		List<Conge> Demande = cs.getCongeStartDate(sqlcurrent);
+//
+//		for (Conge dem : Demande) {
+//			html += "Nom de l'employe : " + dem.getEmploye().getNom() + " Date de debut: " + dem.getDateDebut()
+//					+ " Date de fin: " + dem.getDateFin() + "<br>";
+//			for (int i = 0; i < Unav.size() - 1; i++) {
+//				int interval = (int) ChronoUnit.DAYS.between(
+//						((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),
+//						((java.sql.Date) Unav.get(i + 1).getDateDebut()).toLocalDate());
+//				int demvac = (int) ChronoUnit.DAYS.between(((java.sql.Date) dem.getDateDebut()).toLocalDate(),
+//						((java.sql.Date) dem.getDateFin()).toLocalDate());
+////				if (interval < demvac)
+////					html += dem.getEmploye().getNom() + " Interval trop petit, " + demvac + "<br>";
+//
+//				if (demvac < interval) {
+//					LocalDate datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1);
+//					dem.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+//					datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
+//					dem.setDateFin(java.sql.Date.valueOf(datedebutprop));
+//					dem.setStatutDeLaDemande("Proposition");
+//					cs.save(dem);
+//					html += "Nom: " + dem.getEmploye().getNom() + " Date de début: " + dem.getDateDebut()
+//							+ " Date de fin: " + dem.getDateFin() + " Nouveau Statut: " + dem.getStatutDeLaDemande()
+//							+ "<br>";
+//					break;
+//				} else if (i == Unav.size() - 2) {
+//					LocalDate datedebutprop = ((java.sql.Date) Unav.get(Unav.size()-1).getDateFin()).toLocalDate()
+//							.plusDays(1);
+//					dem.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+//					datedebutprop = datedebutprop.plusDays(demvac);
+//					dem.setDateFin(java.sql.Date.valueOf(datedebutprop));
+//					dem.setStatutDeLaDemande("Proposition");
+//					cs.save(dem);
+//					html += "Nom: " + dem.getEmploye().getNom() + " Date de début: " + dem.getDateDebut()
+//							+ " Date de fin: " + dem.getDateFin() + " Nouveau Statut: " + dem.getStatutDeLaDemande()
+//							+ "<br>";
+//					break;
+//				} else
+//					html += "" + dem.getEmploye().getNom() + " Interval trop petit, " + demvac + "<br>";
+//
+//			}
+//
+//		}
+//		return html;
+//	}
+//}
 // List<Conge> html = cs.getStartDate();
 // List<Conge> html2 =
 //	List<Employe> allEmps = es.getAll();
@@ -106,7 +142,7 @@ public class TestConflit  {
 //					+ ", Date de fin: " + Cong.getDateFin() + ", Date de demande: " + Cong.getDateDemande());
 //		}
 
-		/*------------------------------*/
+/*------------------------------*/
 //		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 //		java.util.Date date = dateformat.parse("2019-04-17");
 //		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
@@ -147,10 +183,10 @@ public class TestConflit  {
 //	return html;
 //	}
 //}
-		
-		/*---------------------------------*/
 
-		//		int jourdevac = 0;
+/*---------------------------------*/
+
+// int jourdevac = 0;
 //		for (LocalDate datetest = sqlStartDate.toLocalDate(); datetest
 //				.isBefore(sqlFinDate.toLocalDate().plusDays(1)); datetest = datetest.plusDays(1)) {
 //			html += (datetest.getDayOfWeek());
