@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import fr.formation.inti.entities.Employe;
+
 @Component
 public class SessionInterceptor extends HandlerInterceptorAdapter {
 
@@ -24,22 +26,40 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
         //exceptions à l'interceptor
 		if (request.getRequestURI().equals("/") 
 				|| request.getRequestURI().equals("/connexion")
+				|| request.getRequestURI().equals("/destroy")
 				|| request.getRequestURI().equals("/css/style.css")) { 
-			log.info("URI exception, ça va pour cette fois. mais connectez-vous !");
+			log.info("URI exception, pas besoin d'être connecté");
 			return true; 
 		}
 		
-		String loginSession = (String) request.getSession().getAttribute("loginSession");
-		if (loginSession == null) {
+		Employe employeSession = null;
+		if (null != request.getSession().getAttribute("employeSession")) {
+			employeSession = (Employe) request.getSession().getAttribute("employeSession");
+			log.info("employeSession = " + employeSession);
+			log.info("connecté en tant que " + employeSession.getNom());
+		}
+		else {
+			log.info("employeSession == null");
 			log.info("personne n'est connecté");
-			loginSession = "personne";
-		}
-		if (loginSession.equals("personne")) {
-			log.info("loginSession == null");
+			log.info("redirection vers localhost:8080/");
+			request.getSession().setAttribute("messageErreur", "Veuillez vous connecter.");
 	        response.sendRedirect(request.getContextPath() + "/");
-	        return false;
 		}
-		log.info("connecté en tant que " + loginSession);
+//		String loginSession = (String) request.getSession().getAttribute("loginSession");
+//		if (loginSession == null) {
+//			log.info("personne n'est connecté");
+//			loginSession = "personne";
+//			log.info("employeSession == null");
+//			log.info("redirection vers localhost:8080/");
+//	        response.sendRedirect(request.getContextPath() + "/");
+//	        return false;
+//		}
+//		if (loginSession.equals("personne")) {
+//			log.info("loginSession == null");
+//			log.info("redirection vers localhost:8080/");
+//	        response.sendRedirect(request.getContextPath() + "/");
+//	        return false;
+//		}
 		return true;
 	}
 
