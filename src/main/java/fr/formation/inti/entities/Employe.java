@@ -14,9 +14,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 //github c'est de la merde !!!!!
 @Entity
 @Table(name = "employe", catalog = "tousenvacancesbd")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Employe implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -130,7 +134,9 @@ public class Employe implements java.io.Serializable {
 	}
 	public void setManager(Employe manager) {
 		this.manager = manager;
-	}	
+	}
+
+	@JsonIgnore
 	@OneToMany(mappedBy="manager")
 	public Set<Employe> getSubordones() {
 		return subordones;

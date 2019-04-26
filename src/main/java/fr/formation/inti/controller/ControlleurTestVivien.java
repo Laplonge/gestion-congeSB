@@ -3,6 +3,8 @@ package fr.formation.inti.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,19 +16,31 @@ import fr.formation.inti.dao.ICompteDao;
 import fr.formation.inti.dao.IEmployeDao;
 import fr.formation.inti.entities.Compte;
 import fr.formation.inti.entities.Employe;
+import fr.formation.inti.interceptors.SessionInterceptor;
 
 @Controller
 public class ControlleurTestVivien {
+
+	private static final Log log = LogFactory.getLog(ControlleurTestVivien.class);
+	
 	@Autowired
 	IEmployeDao employeDao;
 	@Autowired
 	ICompteDao compteDao;
-	
+
 	//récupère la liste de tous les employés, la passe en attribut du modèle listeEmployes.html et l'affiche 
-	@GetMapping(value = { "/listeEmployes", "/employes", "/allEmps" })
+	@GetMapping(value = { "/listeEmployes", "/allEmps" })
     public String personList(Model model) {
         model.addAttribute("employes", employeDao.findAll());
         return "listeEmployes";
+    }
+	
+	@GetMapping(value = { "/employe"})
+    public String donneesEmploye(Model model, HttpServletRequest request) {
+		Employe employeSession = (Employe) request.getSession().getAttribute("employeSession");
+		log.info("affiche les données de " + employeSession.getNom());
+		model.addAttribute("emp", employeSession);
+		return "donneesEmploye";
     }
 	
 	//page d'accueil du login
@@ -64,6 +78,7 @@ public class ControlleurTestVivien {
 					request.getSession().setAttribute("testAttribute", "test /connexion");
 					loginSession = compte.getEmploye().getPrenom() + " " + compte.getEmploye().getNom();
 					request.getSession().setAttribute("loginSession", loginSession);
+					request.getSession().setAttribute("employeSession", compte.getEmploye());
 				} 
 			}
 			if (loginSession == null) {
