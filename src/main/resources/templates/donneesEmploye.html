@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>Données de l'employé connecté</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+</head>
+<body>
+	<h1>données de l'employé</h1>
+	<br />
+	<div>
+		<table border="1">
+			<tr>
+				<th>ID</th>
+				<td th:utext="${emp.idEmploye}">...</td>
+			</tr>
+			<tr>
+				<th>Prenom</th>
+				<td th:utext="${emp.prenom}">...</td>
+			</tr>
+			<tr>
+				<th>Nom</th>
+				<td th:utext="${emp.nom}">...</td>
+			</tr>
+			<tr>
+				<th>grade</th>
+				<td th:utext="${emp.grade}">...</td>
+			</tr>
+			<tr>
+				<th>jours de congés restants</th>
+				<td th:utext="${emp.joursCongeRestant}">...</td>
+			</tr>
+			<tr>
+				<th>adresse mail</th>
+				<td th:utext="${emp.adresseMail}">...</td>
+			</tr>
+			<tr>
+				<th>numéro de téléphone</th>
+				<td th:utext="${emp.numeroTelephone}">...</td>
+			</tr>
+			<tr>
+				<th>manager</th>
+				<td th:utext="${emp.manager.nom}">...</td>
+			</tr>
+			<tr>
+				<td colspan="2">TODO : photo</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
