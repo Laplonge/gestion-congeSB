@@ -48,8 +48,8 @@ public class CongeService implements ICongeService {
 		return congeDao.getCongeStartDate(date);
 	}
 
-	public List<Conge> getUnavailableDate() {
-		return congeDao.getUnavailableDate();
+	public List<Conge> getUnavailableDate(Date date) {
+		return congeDao.getUnavailableDate(date);
 	}
 
 	public List<Conge> getCongeByIdEmploye(Integer id) {
@@ -108,13 +108,18 @@ public class CongeService implements ICongeService {
 	 */
 	public String TestDeLaValiditeDeLaRequete(String debut, String fin) throws ParseException {
 		String html = "";
+		boolean ReqOk = true;
 		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date date = dateformat.parse(debut);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
 
 		date = dateformat.parse(fin);
 		java.sql.Date sqlFinDate = new java.sql.Date(date.getTime());
-		for (Conge cong : getUnavailableDate()) {
+
+		Date current = new Date();
+		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
+
+		for (Conge cong : getUnavailableDate(sqlcurrent)) {
 			html += "validation2";
 			// check if employee holidays is okay with the agree database request
 			if ((sqlStartDate.after(cong.getDateDebut()) && sqlStartDate.before(cong.getDateFin()))
@@ -122,37 +127,38 @@ public class CongeService implements ICongeService {
 					|| (sqlStartDate.equals(cong.getDateDebut()) || sqlFinDate.equals(cong.getDateFin()))) {
 				html += ("Demande refuse1");
 				AlgoDePropo(sqlStartDate, sqlFinDate);
-				return html;
+				ReqOk = false;
+				break;
 			}
 			// check if agree database request is okay with the employee holidays
 			if ((cong.getDateDebut().after(sqlStartDate) && cong.getDateDebut().before(sqlFinDate))
 					|| (cong.getDateFin().after(sqlStartDate) && cong.getDateFin().before(sqlFinDate))) {
 				html += ("Demande refuse2");
 				AlgoDePropo(sqlStartDate, sqlFinDate);
-				break;
-			} else {
-				// Request okay, creation of a new request with on going statut"
-				// Actually just miss the trigger to commit employee and conge database
-				// Id employee will be set with the employee session
-				html += "Demande acceptee";
-				Conge demande = new Conge();
-				demande.setEmploye(cong.getEmploye());
-				demande.setDateDebut(sqlStartDate);
-				demande.setDateFin(sqlFinDate);
-				demande.setDureeJours(calculDureeVacances2(sqlStartDate, sqlFinDate));
-				Date current = new Date();
-				java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
-				demande.setDateDemande(sqlcurrent);
-				demande.setStatutDeLaDemande("en cours");
-				save(demande);
+				ReqOk = false;
 				break;
 			}
+		}
+
+		if (ReqOk == true) {
+			// Request okay, creation of a new request with on going statut"
+			// Actually just miss the trigger to commit employee and conge database
+			// Id employee will be set with the employee session
+			html += "Demande acceptee";
+			Conge demande = new Conge();
+			demande.setEmploye(demande.getEmploye());
+			demande.setDateDebut(sqlStartDate);
+			demande.setDateFin(sqlFinDate);
+			demande.setDureeJours(calculDureeVacances2(sqlStartDate, sqlFinDate));
+			demande.setDateDemande(sqlcurrent);
+			demande.setStatutDeLaDemande("en cours");
+			save(demande);
 		}
 		return html;
 	}
 
 	public String AlgoDePropo(Date debut, Date fin) throws ParseException {
-		
+
 		String html = "";
 		Date current = new Date();
 		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
@@ -160,20 +166,22 @@ public class CongeService implements ICongeService {
 		java.sql.Date sqlfin = new java.sql.Date(fin.getTime());
 		html += "test test2";
 		// Retourne la liste de toutes les dates déjà "acceptee" dans la base de donnée
-		List<Conge> Unav = getUnavailableDate();	
+		List<Conge> Unav = getUnavailableDate(sqlcurrent);
 		html += "test test3";
-		//Test si la date peut inserer dans un interval entre les dates en bases de données
-			//Si c'est possible alors retourner une date de debut avec comme paramettre 
-			//date de debut de la periode precedente +1
-			
-			//Si non alors retourner une date de début avec comme paramettre 
-			//date de debut de la dernière periode +1
-		
+		// Test si la date peut inserer dans un interval entre les dates en bases de
+		// données
+		// Si c'est possible alors retourner une date de debut avec comme paramettre
+		// date de debut de la periode precedente +1
+
+		// Si non alors retourner une date de début avec comme paramettre
+		// date de debut de la dernière periode +1
+
 		html += "test test4";
 		for (int i = 0; i < Unav.size() - 1; i++) {
 			// Dans cette boucle, on test chaque interval contenu dans la liste Unav
-			// pour cela, on prend comme valeur de début, la valeur de la date de fin de la requete actuelle
-			// +1 et comme date de fin la date de début de la requette suivante 
+			// pour cela, on prend comme valeur de début, la valeur de la date de fin de la
+			// requete actuelle
+			// +1 et comme date de fin la date de début de la requette suivante
 			html += "test test";
 			// Calcul des periodes entre les différentes requetes validées
 			int interval = (int) ChronoUnit.DAYS.between(
@@ -195,7 +203,8 @@ public class CongeService implements ICongeService {
 //							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
 //						datedebutprop.plusDays(1);
 //					}
-				TestDeLaValiditeDeLaRequete(datedebutprop.toString(),datefinprop.toString());
+				TestDeLaValiditeDeLaRequete(datedebutprop.toString(), datefinprop.toString());
+				break;
 			}
 
 			else if (i == Unav.size() - 2) {
@@ -206,7 +215,7 @@ public class CongeService implements ICongeService {
 //							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
 //						datedebutprop.plusDays(1);
 //					}
-				html += "dem acc2";
+		
 				Conge demande = new Conge();
 				demande.setEmploye(demande.getEmploye());
 				demande.setDateDebut(java.sql.Date.valueOf(datedebutprop));
@@ -217,19 +226,13 @@ public class CongeService implements ICongeService {
 				demande.setDateDemande(sqlcurrent);
 				demande.setStatutDeLaDemande("Proposition");
 				save(demande);
-				return html;
+				break;
 			}
-			
-			else {
-				return "0";
-				}
-			}
-			// Test si on arrive à la dernière periode disponible
-			// Puis retourne une requete avec un interval identique juste après la dernière
-			// requête
+		}
+		// Test si on arrive à la dernière periode disponible
+		// Puis retourne une requete avec un interval identique juste après la dernière
+		// requête
 
-			
-		
 		return html;
 	}
 }

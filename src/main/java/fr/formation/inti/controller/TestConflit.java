@@ -42,7 +42,7 @@ public class TestConflit {
 		Date current = new Date();
 		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
 		
-		List<Conge> Unav = cs.getUnavailableDate();
+		List<Conge> Unav = cs.getUnavailableDate(sqlcurrent);
 		for (Conge c : Unav) {
 			html += "Date début: " + c.getDateDebut() + " Date de Fin: " + c.getDateFin() + "<br>";
 		}
@@ -81,9 +81,8 @@ public class TestConflit {
 		html += "-----------------------------";
 		html += "<br>";
 		html += "<br>";
-		html += cs.TestDeLaValiditeDeLaRequete("2019-07-08", "2019-07-16");
-		
+		html += cs.TestDeLaValiditeDeLaRequete("2019-07-22", "2019-07-26");
+		//html += cs.getUnavailableDate();
 		return html;
 	}
-	
 }

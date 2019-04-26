@@ -10,7 +10,7 @@ import fr.formation.inti.entities.Conge;
 public interface ICongeService extends IGenericService<Conge>{
 
 	List<Conge> getCongeStartDate(Date date);
-	List<Conge> getUnavailableDate();
+	List<Conge> getUnavailableDate(Date date);
 	List<Conge> getCongeByIdEmploye(Integer id);
 	Integer calculDureeVacances(Conge conge);
 	String validationDeLaPeriode(Conge conge);
