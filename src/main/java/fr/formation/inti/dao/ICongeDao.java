@@ -18,6 +18,9 @@ public interface ICongeDao extends JpaRepository<Conge, Integer> {
 	
 	@Query(nativeQuery = true, value = "SELECT * FROM Conge c WHERE c.Statut_de_la_demande = 'acceptee' ORDER BY c.Date_Debut ASC")
 	List<Conge> getUnavailableDate();
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM Conge c WHERE c.id_employe = :id ORDER BY c.Date_Demande ASC")
+	List<Conge> getCongeByIdEmploye(@Param("id")Integer id);
 }
 
 
