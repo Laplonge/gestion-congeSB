@@ -10,12 +10,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.formation.inti.dao.ICongeDao;
+import fr.formation.inti.dao.IEmployeDao;
 import fr.formation.inti.entities.Conge;
+import fr.formation.inti.entities.Employe;
 import fr.formation.inti.services.interfaces.ICongeService;
 
 @Service("congeService")
@@ -23,6 +24,9 @@ public class CongeService implements ICongeService {
 
 	@Autowired
 	ICongeDao congeDao;
+
+	@Autowired
+	IEmployeDao employeDao;
 
 	public void setEdao(ICongeDao congeDao) {
 		this.congeDao = congeDao;
@@ -146,13 +150,19 @@ public class CongeService implements ICongeService {
 			// Id employee will be set with the employee session
 			html += "Demande acceptee";
 			Conge demande = new Conge();
-			demande.setEmploye(demande.getEmploye());
+			Optional<Employe> emp = employeDao.findById(1);
+			demande.setEmploye(emp.get());
+			emp.get().setJoursCongeRestant(emp.get().getJoursCongeRestant()-demande.getDureeJours());
 			demande.setDateDebut(sqlStartDate);
 			demande.setDateFin(sqlFinDate);
 			demande.setDureeJours(calculDureeVacances2(sqlStartDate, sqlFinDate));
 			demande.setDateDemande(sqlcurrent);
 			demande.setStatutDeLaDemande("en cours");
-			save(demande);
+			try {
+				save(demande);
+				employeDao.save(emp.get());
+			} catch (Exception e) {
+			}
 		}
 		return html;
 	}
@@ -215,9 +225,9 @@ public class CongeService implements ICongeService {
 //							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
 //						datedebutprop.plusDays(1);
 //					}
-		
+
 				Conge demande = new Conge();
-				demande.setEmploye(demande.getEmploye());
+				demande.setEmploye(employeDao.findById(1).get());
 				demande.setDateDebut(java.sql.Date.valueOf(datedebutprop));
 				LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
 				demande.setDateFin(java.sql.Date.valueOf(datedebutprop));
@@ -234,5 +244,34 @@ public class CongeService implements ICongeService {
 		// requête
 
 		return html;
+	}
+
+	
+	public String TestDeConflitDemandeEnCours() {
+		Date current = new Date();
+		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
+		List<Conge> Conflit = getCongeStartDate(sqlcurrent);
+		int start = 1;
+		String html = "";
+		
+		for(Conge TestConf : Conflit) {
+			html += "Id Conge : " + TestConf.getIdConge() + "<br>" ;
+			for(int i=start; i<Conflit.size(); i++) {
+				
+				if ((TestConf.getDateDebut().after(Conflit.get(i).getDateDebut()) && TestConf.getDateDebut().before(Conflit.get(i).getDateFin()))
+						|| (TestConf.getDateFin().after(Conflit.get(i).getDateDebut()) && TestConf.getDateFin().before(Conflit.get(i).getDateFin()))
+						|| (TestConf.getDateDebut().equals(Conflit.get(i).getDateDebut()) || TestConf.getDateFin().equals(Conflit.get(i).getDateFin()))) {
+					html +="----------- Conflit avec la requete : " + Conflit.get(i).getIdConge() + "<br>";
+				}
+				// check if agree database request is okay with the employee holidays
+				else if ((Conflit.get(i).getDateDebut().after(TestConf.getDateDebut()) && Conflit.get(i).getDateDebut().before(TestConf.getDateFin()))
+						|| (Conflit.get(i).getDateFin().after(TestConf.getDateDebut()) && Conflit.get(i).getDateFin().before(TestConf.getDateFin()))) {
+					html += "Conflit avec la requete : " + Conflit.get(i).getIdConge() + "<br>";
+				}	
+				
+			}
+		start++;	
+		}
+	return html;
 	}
 }

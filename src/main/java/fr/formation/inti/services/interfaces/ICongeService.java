@@ -16,4 +16,5 @@ public interface ICongeService extends IGenericService<Conge>{
 	String validationDeLaPeriode(Conge conge);
 	String TestDeLaValiditeDeLaRequete(String debut, String fin) throws ParseException;
 	String AlgoDePropo(Date debut, Date fin) throws ParseException;
+	String TestDeConflitDemandeEnCours();
 }
