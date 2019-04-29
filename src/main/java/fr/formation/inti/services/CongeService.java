@@ -12,6 +12,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import fr.formation.inti.dao.ICongeDao;
 import fr.formation.inti.dao.IEmployeDao;
@@ -19,6 +23,7 @@ import fr.formation.inti.entities.Conge;
 import fr.formation.inti.entities.Employe;
 import fr.formation.inti.services.interfaces.ICongeService;
 
+@RestController
 @Service("congeService")
 public class CongeService implements ICongeService {
 
@@ -31,7 +36,7 @@ public class CongeService implements ICongeService {
 	public void setEdao(ICongeDao congeDao) {
 		this.congeDao = congeDao;
 	}
-
+	
 	public Optional<Conge> findById(Integer id) {
 		return congeDao.findById(id);
 	}
@@ -56,7 +61,9 @@ public class CongeService implements ICongeService {
 		return congeDao.getUnavailableDate(date);
 	}
 
-	public List<Conge> getCongeByIdEmploye(Integer id) {
+	@CrossOrigin
+    @RequestMapping("/restCongeService/getCongeByIdEmploye/{id}")
+	public List<Conge> getCongeByIdEmploye(@PathVariable("id") Integer id) {
 		return congeDao.getCongeByIdEmploye(id);
 	}
 
