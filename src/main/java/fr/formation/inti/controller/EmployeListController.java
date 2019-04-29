@@ -24,10 +24,11 @@ class EmployeListController {
     public List<Employe> employes() {
         return employeDao.findAll();
     }
-    
+	
+	@CrossOrigin
     @GetMapping("/string")
     public String restString() {
     	String message = "[{\"message\": \"REST\"}]";
         return message;
     }
-}
+}	

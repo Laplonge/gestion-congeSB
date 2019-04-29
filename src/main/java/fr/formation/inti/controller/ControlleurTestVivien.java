@@ -16,7 +16,6 @@ import fr.formation.inti.dao.ICompteDao;
 import fr.formation.inti.dao.IEmployeDao;
 import fr.formation.inti.entities.Compte;
 import fr.formation.inti.entities.Employe;
-import fr.formation.inti.interceptors.SessionInterceptor;
 
 @Controller
 public class ControlleurTestVivien {
