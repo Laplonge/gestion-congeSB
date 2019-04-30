@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -123,9 +125,10 @@ public class CongeService implements ICongeService {
 	 * Test la validité de la requete avant de pouvoir continuer dans la demande de
 	 * requete
 	 */
-	public String TestDeLaValiditeDeLaRequete(String debut, String fin) throws ParseException {
+	public String TestDeLaValiditeDeLaRequete(String debut, String fin, HttpServletRequest request) throws ParseException {
 		String html = "";
 		boolean ReqOk = true;
+		
 		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date date = dateformat.parse(debut);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
@@ -143,7 +146,7 @@ public class CongeService implements ICongeService {
 					|| (sqlFinDate.after(cong.getDateDebut()) && sqlFinDate.before(cong.getDateFin()))
 					|| (sqlStartDate.equals(cong.getDateDebut()) || sqlFinDate.equals(cong.getDateFin()))) {
 				html += ("Demande refuse1");
-				AlgoDePropo(sqlStartDate, sqlFinDate);
+				AlgoDePropo(sqlStartDate, sqlFinDate,request);
 				ReqOk = false;
 				break;
 			}
@@ -151,7 +154,7 @@ public class CongeService implements ICongeService {
 			if ((cong.getDateDebut().after(sqlStartDate) && cong.getDateDebut().before(sqlFinDate))
 					|| (cong.getDateFin().after(sqlStartDate) && cong.getDateFin().before(sqlFinDate))) {
 				html += ("Demande refuse2");
-				AlgoDePropo(sqlStartDate, sqlFinDate);
+				AlgoDePropo(sqlStartDate, sqlFinDate,request);
 				ReqOk = false;
 				break;
 			}
@@ -163,24 +166,25 @@ public class CongeService implements ICongeService {
 			// Id employee will be set with the employee session
 			html += "Demande acceptee";
 			Conge demande = new Conge();
-			Optional<Employe> emp = employeDao.findById(1);
-			demande.setEmploye(emp.get());
-			emp.get().setJoursCongeRestant(emp.get().getJoursCongeRestant()-demande.getDureeJours());
+			Employe emp = (Employe) request.getSession().getAttribute("employeSession");  
+			demande.setEmploye(emp);
+			
+			emp.setJoursCongeRestant(emp.getJoursCongeRestant()-demande.getDureeJours());
 			demande.setDateDebut(sqlStartDate);
 			demande.setDateFin(sqlFinDate);
 			demande.setDureeJours(calculDureeVacances2(sqlStartDate, sqlFinDate));
 			demande.setDateDemande(sqlcurrent);
 			demande.setStatutDeLaDemande("en cours");
 			try {
+				employeDao.save(emp);
 				save(demande);
-				employeDao.save(emp.get());
 			} catch (Exception e) {
 			}
 		}
 		return html;
 	}
 
-	public String AlgoDePropo(Date debut, Date fin) throws ParseException {
+	public String AlgoDePropo(Date debut, Date fin, HttpServletRequest request) throws ParseException {
 
 		String html = "";
 		Date current = new Date();
@@ -226,7 +230,7 @@ public class CongeService implements ICongeService {
 //							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
 //						datedebutprop.plusDays(1);
 //					}
-				TestDeLaValiditeDeLaRequete(datedebutprop.toString(), datefinprop.toString());
+				TestDeLaValiditeDeLaRequete(datedebutprop.toString(), datefinprop.toString(), request);
 				break;
 			}
 
@@ -285,6 +289,12 @@ public class CongeService implements ICongeService {
 			}
 		start++;	
 		}
-	return html;
+		return html;
+	}
+
+	@Override
+	public String TestDeLaValiditeDeLaRequete(String debut, String fin) throws ParseException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
