@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>homeBoss.html</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron">
+			<h2>Demande de Congés</h2>
+			<ul class="nav nav-tabs">
+				<li class="active"><a data-toggle="tab" href="#Cboss">Congés
+						de tous les employés (BOSS)</a></li>
+				<li><a data-toggle="tab" href="#Cemploye">Mes Congés
+						(EMPLOYE)</a></li>
+			</ul>
+			<div class="tab-content">
+				<div id="Cboss" class="tab-pane fade in active">
+					<h3 class="card-title">BOSS</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<div id="Cemploye" class="tab-pane fade">
+					<h3 class="card-title">EMPLOYE</h3>
+					<p>
+						Mes demandes de congé : Validée en <em class="greentext">Vert</em>,
+						Refusée en <em class="redtext">Rouge</em>, En Cours de Traitement
+						en <em class="yellowtext">Jaune</em>
+					</p>
+
+					<ul th:each="congeAccepte : ${congesAcceptes}" class="list-group">
+						<li th:text="${congeAccepte}"
+							class="list-group-item list-group-item-success">Demande de
+							congé Validé</li>
+					</ul>
+
+					<ul th:each="congeRefuse : ${congesRefuses}" class="list-group">
+						<li th:text="${congeRefuse}"
+							class="list-group-item list-group-item-danger">Demande de
+							congé Refusé</li>
+					</ul>
+
+					<ul th:each="congeEnCours : ${congesEnCours}" class="list-group">
+						<li th:text="${congeEnCours}"
+							class="list-group-item list-group-item-warning">Demande de
+							congé En Cours</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="jumbotron">
+			<h2>Notification</h2>
+			<ul class="nav nav-tabs">
+				<li class="active"><a data-toggle="tab" href="#Nboss">Congés
+						de tous les employés (BOSS)</a></li>
+				<li><a data-toggle="tab" href="#Nemploye">Mes Congés
+						(EMPLOYE)</a></li>
+			</ul>
+			<br>
+			<div class="tab-content">
+				<div id="Nboss" class="tab-pane fade in active">
+
+					<h3 class="card-title">BOSS</h3>
+					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+				<div id="Nemploye" class="tab-pane fade">
+
+					<h3 class="card-title">EMPLOYE</h3>
+					<p>Contre-Propositions de l'algorithme magique "AlgoDePropo"
+						copyright Cédric 2019, pour résoudre les conflits de demande de
+						congés.</p>
+					<ul th:each="proposition : ${propositions}" class="list-group">
+						<li th:text="${proposition}"
+							class="list-group-item list-group-item-info">Contre-Proposition
+							de demande de Congés</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

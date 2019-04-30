@@ -18,6 +18,16 @@ import javax.persistence.TemporalType;
 @Table(name = "conge", catalog = "tousenvacancesbd")
 public class Conge implements java.io.Serializable {
 
+	@Override
+	public String toString() {
+		String traitement = ". Traitement en attente.";
+		if (null != dateTraitement) {
+			traitement = ", traitée le " + dateTraitement + ".";
+		}
+		return "Du " + dateDebut + " au " + dateFin + ". nombre de jours : " + dureeJours
+				+ " | demandée le " + dateDemande + traitement;
+	}
+
 	private static final long serialVersionUID = 1L;
 	private Integer idConge;
 	private Employe employe;
