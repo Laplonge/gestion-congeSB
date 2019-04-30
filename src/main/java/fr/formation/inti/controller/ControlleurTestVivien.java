@@ -1,5 +1,6 @@
 package fr.formation.inti.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import fr.formation.inti.dao.IEmployeDao;
 import fr.formation.inti.entities.Compte;
 import fr.formation.inti.entities.Conge;
 import fr.formation.inti.entities.Employe;
+import fr.formation.inti.services.interfaces.ICongeService;
 
 @Controller
 public class ControlleurTestVivien {
@@ -34,6 +36,8 @@ public class ControlleurTestVivien {
 	ICompteDao compteDao;
 	@Autowired
 	ICongeDao congeDao;
+	@Autowired
+	ICongeService congeService;
 
 	//récupère la liste de tous les employés, la passe en attribut du modèle listeEmployes.html et l'affiche 
 	@GetMapping(value = { "/listeEmployes", "/allEmps" })
@@ -51,6 +55,12 @@ public class ControlleurTestVivien {
 		log.info("affiche les données de " + employeSession.getNom());
 		model.addAttribute("emp", employeSession);
 		return "donneesEmploye";
+    }
+	@RequestMapping(value= "/creationrequest")
+    public String creationrequest(@RequestParam(required=false, name="DateDeb") String DateDeb, @RequestParam(required=false, name="DateFin") String DateFin, HttpServletRequest request) throws ParseException {
+        log.info("DateDeb = " + DateDeb + " | DateFin = " + DateFin);
+        congeService.TestDeLaValiditeDeLaRequete(DateDeb, DateFin, request);
+        return "login";
     }
 	
 	//page d'accueil du login
@@ -143,6 +153,7 @@ public class ControlleurTestVivien {
 	@RequestMapping("/home/boss")
 	public String homeBoss(Model model, HttpServletRequest request) {
 		Employe employeSession = (Employe) request.getSession().getAttribute("employeSession");
+		model.addAttribute("emp", employeSession);
 		if (!employeSession.getGrade().equals("boss")) {
 			log.info("tentative d'accès à /home/boss alors que employeSession.grade != boss");
 			request.getSession().setAttribute("messageErreur", "Connectez-vous en tant que boss pour acceder à cette page");
