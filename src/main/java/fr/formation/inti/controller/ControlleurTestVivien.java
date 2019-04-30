@@ -1,5 +1,8 @@
 package fr.formation.inti.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -10,11 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import fr.formation.inti.dao.ICompteDao;
+import fr.formation.inti.dao.ICongeDao;
 import fr.formation.inti.dao.IEmployeDao;
 import fr.formation.inti.entities.Compte;
+import fr.formation.inti.entities.Conge;
 import fr.formation.inti.entities.Employe;
 
 @Controller
@@ -26,6 +32,8 @@ public class ControlleurTestVivien {
 	IEmployeDao employeDao;
 	@Autowired
 	ICompteDao compteDao;
+	@Autowired
+	ICongeDao congeDao;
 
 	//récupère la liste de tous les employés, la passe en attribut du modèle listeEmployes.html et l'affiche 
 	@GetMapping(value = { "/listeEmployes", "/allEmps" })
@@ -37,7 +45,7 @@ public class ControlleurTestVivien {
 	@PostMapping("/addEmploye")
 	//TODO
 	
-	@GetMapping(value = { "/employe"})
+	@RequestMapping(value = { "/employe"})
     public String donneesEmploye(Model model, HttpServletRequest request) {
 		Employe employeSession = (Employe) request.getSession().getAttribute("employeSession");
 		log.info("affiche les données de " + employeSession.getNom());
@@ -95,5 +103,72 @@ public class ControlleurTestVivien {
 		request.getSession().invalidate();
 		request.getSession().setAttribute("messageErreur", "Session invalidée");
 		return "redirect:/";
+	}
+	
+	@RequestMapping("/home/employe")
+	public String homeEmploye(Model model, HttpServletRequest request) {
+		//vérification que l'employé n'est pas un boss, sinon, redirection vers /home/boss
+		Employe employeSession = (Employe) request.getSession().getAttribute("employeSession");
+		if (employeSession.getGrade().equals("boss")) {
+			log.info("tentative d'accès à /home/employe alors que employeSession.grade == boss");
+			return "redirect:/home/boss";
+		}
+		
+		//historique des congés de l'employé
+		log.info("récupération des demandes de congés de " + employeSession.getPrenom() + " " + employeSession.getNom());
+		List<Conge> listeConges = congeDao.getHistoriqueByIdEmploye(employeSession.getIdEmploye());
+		List<Conge> congesAcceptes = new ArrayList();
+		List<Conge> congesRefuses = new ArrayList();
+		List<Conge> congesEnCours = new ArrayList();
+		int i = 0;
+		for (Conge conge : listeConges) {
+			log.info("classement de la demande de congé n°" + ++i);
+			log.info("demande n°" + i + " : statut = " + conge.getStatutDeLaDemande());
+			if (conge.getStatutDeLaDemande().equals("acceptee")) {congesAcceptes.add(conge);}	
+			if (conge.getStatutDeLaDemande().equals("refusee")) {congesRefuses.add(conge);}		
+			if (conge.getStatutDeLaDemande().equals("en cours")) {congesEnCours.add(conge);}
+		}
+		model.addAttribute("congesAcceptes", congesAcceptes);
+		model.addAttribute("congesRefuses", congesRefuses);
+		model.addAttribute("congesEnCours", congesEnCours);
+		
+		//notifications : les contre propositions de l'algorithme
+		log.info("récupération des demandes de congés de " + employeSession.getPrenom() + " " + employeSession.getNom());
+		List<Conge> propositions = congeDao.getPropositionByIdEmploye(employeSession.getIdEmploye());
+		model.addAttribute("propositions", propositions);
+		return "homeEmploye";
+	}
+	
+	@RequestMapping("/home/boss")
+	public String homeBoss(Model model, HttpServletRequest request) {
+		Employe employeSession = (Employe) request.getSession().getAttribute("employeSession");
+		if (!employeSession.getGrade().equals("boss")) {
+			log.info("tentative d'accès à /home/boss alors que employeSession.grade != boss");
+			request.getSession().setAttribute("messageErreur", "Connectez-vous en tant que boss pour acceder à cette page");
+			return "redirect:/";
+		}
+		log.info("récupération des demandes de congés de " + employeSession.getPrenom() + " " + employeSession.getNom());
+		List<Conge> listeConges = congeDao.getHistoriqueByIdEmploye(employeSession.getIdEmploye());
+		List<Conge> congesAcceptes = new ArrayList();
+		List<Conge> congesRefuses = new ArrayList();
+		List<Conge> congesEnCours = new ArrayList();
+		int i = 0;
+		for (Conge conge : listeConges) {
+			log.info("classement de la demande de congé n°" + ++i);
+			log.info("demande n°" + i + " : statut = " + conge.getStatutDeLaDemande());
+			if (conge.getStatutDeLaDemande().equals("acceptee")) {congesAcceptes.add(conge);}	
+			if (conge.getStatutDeLaDemande().equals("refusee")) {congesRefuses.add(conge);}		
+			if (conge.getStatutDeLaDemande().equals("en cours")) {congesEnCours.add(conge);}
+		}
+		model.addAttribute("congesAcceptes", congesAcceptes);
+		model.addAttribute("congesRefuses", congesRefuses);
+		model.addAttribute("congesEnCours", congesEnCours);
+		
+		//notifications : les contre propositions de l'algorithme
+		log.info("récupération des demandes de congés de " + employeSession.getPrenom() + " " + employeSession.getNom());
+		List<Conge> propositions = congeDao.getPropositionByIdEmploye(employeSession.getIdEmploye());
+		model.addAttribute("propositions", propositions);
+
+		return "homeBoss";
 	}
 }
