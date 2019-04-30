@@ -5,13 +5,29 @@ body {
 	color: navy;
 }
 div {
-/* 	width: 20%; */
-/* 	position: absolute; */
-/* 	left: 30%; */
-	border: solid green 2px;
-	padding: 50px;
+	padding: 20px;
 }
 .error {
 	color: red;
 	font-family: fantasy;
+}
+table {
+    text-align: center;
+}
+td, th {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.employeData {
+    margin: 50px;
+}
+.calendrier {
+    width: 40%;
+    float: left;
+    margin: 50px;
+}
+.notif {
+    width: 40%;
+    float: left;
+    margin: 50px;
 }

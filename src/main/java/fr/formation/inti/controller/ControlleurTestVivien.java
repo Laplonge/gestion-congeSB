@@ -34,6 +34,9 @@ public class ControlleurTestVivien {
         return "listeEmployes";
     }
 	
+	@PostMapping("/addEmploye")
+	//TODO
+	
 	@GetMapping(value = { "/employe"})
     public String donneesEmploye(Model model, HttpServletRequest request) {
 		Employe employeSession = (Employe) request.getSession().getAttribute("employeSession");

@@ -1,26 +1,50 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8" />
-	<title>Liste des Employés</title>
-	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+<meta charset="UTF-8" />
+<title>Liste des Employés</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 </head>
 <body>
-	<h1>Liste des Employés</h1>
-	<a href="addEmploye">Ajouter un Employé</a>
-	<br />
-	<br />
-	<div>
-		<table border="1">
-			<tr>
-				<th>Prenom</th>
-				<th>Nom</th>
-			</tr>
-			<tr th:each="emp : ${employes}">
-				<td th:utext="${emp.prenom}">...</td>
-				<td th:utext="${emp.nom}">...</td>
-			</tr>
-		</table>
+	<div class="container">
+		<div class="card">
+			<h5 class="card-title">listeEmployes.html</h5>
+			<div class="card-body">
+				<h1>Liste des Employés</h1>
+				<a href="addEmploye">Ajouter un Employé</a> <br /> <br />
+				<form th:action="@{/addEmploye}" method="post">
+					<input type="submit" value="Ajouter Employé" class="btn btn-primary" />
+				</form>
+				<div>
+					<table border="1">
+						<tr>
+							<th>ID</th>
+							<th>Prenom</th>
+							<th>Nom</th>
+							<th>Grade</th>
+							<th>Adresse Mail</th>
+							<th>N° de Téléphone</th>
+							<th>Jours de Congés Restants</th>
+							<th>Manager</th>
+						</tr>
+						<tr th:each="emp : ${employes}">
+							<td th:utext="${emp.idEmploye}">...</td>
+							<td th:utext="${emp.prenom}">...</td>
+							<td th:utext="${emp.nom}">...</td>
+							<td th:utext="${emp.grade}">...</td>
+							<td th:utext="${emp.adresseMail}">...</td>
+							<td th:utext="${emp.numeroTelephone}">...</td>
+							<td th:utext="${emp.joursCongeRestant}">...</td>
+							<td th:utext="${emp.manager}">...</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

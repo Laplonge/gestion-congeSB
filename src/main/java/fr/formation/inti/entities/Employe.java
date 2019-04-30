@@ -156,7 +156,13 @@ public class Employe implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "Employe [idEmploye=" + idEmploye + ", prenom=" + prenom + ", nom=" + nom + ", grade=" + grade + ", manager=" + manager.getNom() + "]";
+		String managerName;
+		if (null == manager) {
+			managerName = "";
+		} else {
+			managerName = manager.getPrenom() + " " + manager.getNom();
+		}
+		return "Employe [idEmploye=" + idEmploye + ", prenom=" + prenom + ", nom=" + nom + ", grade=" + grade + ", manager=" + managerName + "]";
 	}
 
 //	TODO

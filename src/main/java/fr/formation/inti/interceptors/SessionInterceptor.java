@@ -25,6 +25,7 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
         
         //exceptions à l'interceptor
 		if (request.getRequestURI().equals("/") 
+				|| request.getRequestURI().equals("/error")
 				|| request.getRequestURI().equals("/connexion")
 				|| request.getRequestURI().equals("/destroy")
 				|| request.getRequestURI().equals("/css/style.css")) { 

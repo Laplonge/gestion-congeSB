@@ -7,19 +7,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import fr.formation.inti.interceptors.LogInterceptor;
 import fr.formation.inti.interceptors.SessionInterceptor;
 
+
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Autowired
-	LogInterceptor logInterceptor ;
+	LogInterceptor logInterceptor;
 	
 	@Autowired
-	SessionInterceptor sessionInterceptor ;
+	SessionInterceptor sessionInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(logInterceptor); 
-//        registry.addInterceptor(sessionInterceptor);
+        registry.addInterceptor(sessionInterceptor);
 	}
 
 }
