@@ -13,27 +13,22 @@
 	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-<<<<<<< HEAD
 
-	<!-- 	<div> -->
-	<!-- 		<h3>connecté en tant que :</h3> -->
-	<!-- 		<h3 th:text="${loginSession}">...</h3> -->
-	<!-- 	</div> -->
-=======
-	<div th:replace="fragments/header :: header"></div>
->>>>>>> refs/heads/devDavid1
 	<div class="row">
 		<div class="col-sm-4"></div>
 		<div class="col-sm-4" id="formContent">
 			<form th:action="@{/connexion}" method="post" class="jumbotron">
 				<table>
-<<<<<<< HEAD
-				<tr><img src="../static/images/logo.png" th:src="@{/images/logo.png}" /></tr>
-             <br>
-=======
-					<img src="../static/images/logo.png" th:src="@{images/logo.png}" />
+					<tr>
+						<h3>
+							connecté en tant que : <em th:text="${loginSession}">...</em>
+						</h3>
+					</tr>
+					<tr>
+						<img src="../static/images/logo.png" th:src="@{/images/logo.png}" />
+					</tr>
 					<br>
->>>>>>> refs/heads/devDavid1
+
 					<tr>
 						<td><input type="text" id="login" name="login"
 							placeholder="login"></input></td>
@@ -47,6 +42,11 @@
 					</tr>
 				</table>
 			</form>
+			<tr>
+				<form th:action="@{/destroy}" method="post">
+					<input type="submit" value="Destroy Session" />
+				</form>
+			</tr>
 			<div>
 				<p class="test" th:text="${testAttribute}">...</p>
 				<p class="error" th:text="${messageErreur}">...</p>
@@ -54,9 +54,5 @@
 		</div>
 		<div class="col-sm-4"></div>
 	</div>
-	<!-- 		<form th:action="@{/destroy}" method="post"> -->
-	<!-- 			<input type="submit" value="Destroy Session" /> -->
-	<!-- 		</form> -->
-
 </body>
 </html>

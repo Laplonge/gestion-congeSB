@@ -95,7 +95,7 @@ public class ControlleurTestVivien {
 				request.getSession().setAttribute("messageErreur", "Login inconnu, ou mot de passe incorrect.");
 			}
 		}
-		return "redirect:/allEmps";
+		return "redirect:/home/employe";
 	}
 	
 	@PostMapping("/destroy")

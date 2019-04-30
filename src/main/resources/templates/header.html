@@ -1,0 +1,15 @@
+<header th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml">
+	<div class="row">
+		<div class="col-sm-4">
+
+		</div>
+		<div class="col-sm-4">
+			<p>Allo les vacances :)</p>
+		</div>
+		<div class="col-sm-4">
+			<form th:action="@{/destroy}" method="post">
+				<input type="submit" value="Destroy Session" />
+			</form>
+		</div>
+	</div>
+	</header>
