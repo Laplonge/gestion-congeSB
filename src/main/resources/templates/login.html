@@ -13,28 +13,21 @@
 	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-	<!-- 	<div> -->
-	<!-- 		<h3>connecté en tant que :</h3> -->
-	<!-- 		<h3 th:text="${loginSession}">...</h3> -->
-	<!-- 	</div> -->
+	<div th:replace="fragments/header :: header"></div>
 	<div class="row">
 		<div class="col-sm-4"></div>
 		<div class="col-sm-4" id="formContent">
 			<form th:action="@{/connexion}" method="post" class="jumbotron">
 				<table>
-				<tr><img src="../static/images/logo.png" th:src="@{images/logo.png}" /></tr>
-             <br>
+					<img src="../static/images/logo.png" th:src="@{images/logo.png}" />
+					<br>
 					<tr>
-						<td>
-						<input type="text" id="login" 
-							name="login" placeholder="login"></input>
-							</td>
+						<td><input type="text" id="login" name="login"
+							placeholder="login"></input></td>
 					</tr>
 					<tr>
-						<td>
-						<input type="text" id="password" 
-							name="motDePasse" placeholder="mot de passe"></input>
-							</td>
+						<td><input type="text" id="password" name="motDePasse"
+							placeholder="mot de passe"></input></td>
 					</tr>
 					<tr>
 						<td colspan="2"><input type="submit" value="Connectez-vous" /></td>
