@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import fr.formation.inti.interceptors.LogInterceptor;
 import fr.formation.inti.interceptors.SessionInterceptor;
 
-
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
