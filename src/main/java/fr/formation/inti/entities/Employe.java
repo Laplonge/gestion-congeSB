@@ -165,7 +165,6 @@ public class Employe implements java.io.Serializable {
 		return "Employe [idEmploye=" + idEmploye + ", prenom=" + prenom + ", nom=" + nom + ", grade=" + grade + ", manager=" + managerName + "]";
 	}
 
-
 //	TODO
 //	méthodes générées par défaut pour les entities congé et compte, mais ça fait planter.
 //	pas sur qu'on en ait besoin mais dans le doute je les laisse là

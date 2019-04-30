@@ -15,6 +15,30 @@
 <body>
 	<div class="container">
 		<div class="jumbotron">
+			<h2>Données de l'Employé</h2>
+			<table class="employeData" border="1">
+				<tr>
+					<th>ID</th>
+					<th>Prenom</th>
+					<th>Nom</th>
+					<th>Grade</th>
+					<th>Adresse Mail</th>
+					<th>N° de Téléphone</th>
+					<th>Jours de Congés Restants</th>
+				</tr>
+				<tr>
+					<td th:utext="${emp.idEmploye}">...</td>
+					<td th:utext="${emp.prenom}">...</td>
+					<td th:utext="${emp.nom}">...</td>
+					<td th:utext="${emp.grade}">...</td>
+					<td th:utext="${emp.adresseMail}">...</td>
+					<td th:utext="${emp.numeroTelephone}">...</td>
+					<td th:utext="${emp.joursCongeRestant}">...</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div class="jumbotron">
 			<h2>Demande de Congés</h2>
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#Cboss">Congés

@@ -16,6 +16,29 @@
 <!-- <div th:replace="fragments/header :: header"></div> -->
 	<div class="container">
 		<div class="jumbotron">
+			<h2>Données de l'Employé</h2>
+			<table class="employeData" border="1">
+				<tr>
+					<th>ID</th>
+					<th>Prenom</th>
+					<th>Nom</th>
+					<th>Grade</th>
+					<th>Adresse Mail</th>
+					<th>N° de Téléphone</th>
+					<th>Jours de Congés Restants</th>
+				</tr>
+				<tr>
+					<td th:utext="${emp.idEmploye}">...</td>
+					<td th:utext="${emp.prenom}">...</td>
+					<td th:utext="${emp.nom}">...</td>
+					<td th:utext="${emp.grade}">...</td>
+					<td th:utext="${emp.adresseMail}">...</td>
+					<td th:utext="${emp.numeroTelephone}">...</td>
+					<td th:utext="${emp.joursCongeRestant}">...</td>
+				</tr>
+			</table>
+		</div>
+		<div class="jumbotron">
 			<h2>Demande de Congés</h2>
 			<br>
 			<p>
@@ -47,8 +70,7 @@
 			<br>
 			<p>Contre-Propositions de l'algorithme magique "AlgoDePropo"
 				copyright Cédric 2019, pour résoudre les conflits de demande de
-				congés.
-			</p>
+				congés.</p>
 			<ul th:each="proposition : ${propositions}" class="list-group">
 				<li th:text="${proposition}"
 					class="list-group-item list-group-item-info">Contre-Proposition
