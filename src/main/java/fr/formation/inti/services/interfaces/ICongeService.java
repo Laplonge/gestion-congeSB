@@ -11,7 +11,9 @@ public interface ICongeService extends IGenericService<Conge>{
 
 	List<Conge> getCongeStartDate(Date date);
 	List<Conge> getUnavailableDate(Date date);
-	List<Conge> getCongeByIdEmploye(Integer id);
+	List<Conge> getHistoriqueByIdEmploye(Integer id);
+	List<Conge> getPropositionByIdEmploye(Integer id);
+	
 	Integer calculDureeVacances(Conge conge);
 	String validationDeLaPeriode(Conge conge);
 	String TestDeLaValiditeDeLaRequete(String debut, String fin) throws ParseException;

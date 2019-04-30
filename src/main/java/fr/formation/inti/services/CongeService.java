@@ -62,9 +62,15 @@ public class CongeService implements ICongeService {
 	}
 
 	@CrossOrigin
-    @RequestMapping("/restCongeService/getCongeByIdEmploye/{id}")
-	public List<Conge> getCongeByIdEmploye(@PathVariable("id") Integer id) {
-		return congeDao.getCongeByIdEmploye(id);
+    @RequestMapping("/restCongeService/getPropositionByIdEmploye/{id}")
+	public List<Conge> getPropositionByIdEmploye(@PathVariable("id") Integer id) {
+		return congeDao.getPropositionByIdEmploye(id);
+	}
+	
+	@CrossOrigin
+    @RequestMapping("/restCongeService/getHistoriqueByIdEmploye/{id}")
+	public List<Conge> getHistoriqueByIdEmploye(@PathVariable("id") Integer id) {
+		return congeDao.getHistoriqueByIdEmploye(id);
 	}
 
 	/* Cette fonction retourne le jour de vacances de la semaine */
