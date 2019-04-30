@@ -155,7 +155,6 @@ public class Employe implements java.io.Serializable {
 	}
 
 	@Override
-<<<<<<< HEAD
 	public String toString() {
 		String managerName;
 		if (null == manager) {
@@ -165,17 +164,6 @@ public class Employe implements java.io.Serializable {
 		}
 		return "Employe [idEmploye=" + idEmploye + ", prenom=" + prenom + ", nom=" + nom + ", grade=" + grade + ", manager=" + managerName + "]";
 	}
-=======
-    public String toString() {
-        String managerName;
-        if (null == manager) {
-            managerName = "";
-        } else {
-            managerName = manager.getPrenom() + " " + manager.getNom();
-        }
-        return "Employe [idEmploye=" + idEmploye + ", prenom=" + prenom + ", nom=" + nom + ", grade=" + grade + ", manager=" + managerName + "]";
-    }
->>>>>>> refs/heads/devDavid1
 
 //	TODO
 //	méthodes générées par défaut pour les entities congé et compte, mais ça fait planter.

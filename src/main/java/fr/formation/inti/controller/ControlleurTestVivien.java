@@ -109,6 +109,7 @@ public class ControlleurTestVivien {
 	public String homeEmploye(Model model, HttpServletRequest request) {
 		//vérification que l'employé n'est pas un boss, sinon, redirection vers /home/boss
 		Employe employeSession = (Employe) request.getSession().getAttribute("employeSession");
+		model.addAttribute("emp", employeSession);
 		if (employeSession.getGrade().equals("boss")) {
 			log.info("tentative d'accès à /home/employe alors que employeSession.grade == boss");
 			return "redirect:/home/boss";
