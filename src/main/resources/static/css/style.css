@@ -9,43 +9,6 @@ body {
 	font-family: "Poppins", sans-serif;
 	height: 100vh;
 }
-<<<<<<< HEAD
-div {
-	padding: 20px;
-=======
-
-a {
-	color: #92badd;
-	display: inline-block;
-	text-decoration: none;
-	font-weight: 400;
->>>>>>> refs/heads/devDavid1
-}
-<<<<<<< HEAD
-.error {
-	color: red;
-	font-family: fantasy;
-}
-table {
-    text-align: center;
-}
-td, th {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-.employeData {
-    margin: 50px;
-}
-.calendrier {
-    width: 40%;
-    float: left;
-    margin: 50px;
-}
-.notif {
-    width: 40%;
-    float: left;
-    margin: 50px;
-=======
 
 h2 {
 	text-align: center;
@@ -325,5 +288,4 @@ to {
 
 #icon {
 	width: 60%;
->>>>>>> refs/heads/devDavid1
 }

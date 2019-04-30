@@ -3,10 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Thymeleaf et SpringSession Login</title>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-	crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 <link
 	href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -17,49 +13,7 @@
 	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-<<<<<<< HEAD
-	<div class="container">
-		<div class="card">
-			<h5 class="card-title">login.html</h5>
-			<div class="card-body">
-				<div>
-					<h3>
-						connecté en tant que : <em th:text="${loginSession}">...</em>
-					</h3>
-				</div>
-				<div>
-					<form th:action="@{/connexion}" method="post">
-						<table>
-							<tr>
-								<th>Login</th>
-								<td><input type="text" name="login"></input></td>
-							</tr>
-							<tr>
-								<th>Mot de Passe</th>
-								<td><input type="text" name="motDePasse"></input></td>
-							</tr>
-							<tr>
-								<th></th>
-								<td><input type="submit" value="Connectez-vous"
-									class="btn btn-success" /></td>
-							</tr>
-						</table>
-					</form>
 
-				</div>
-				<div>
-					<p class="test" th:text="${testAttribute}">...</p>
-					<p class="error" th:text="${messageErreur}">...</p>
-					<hr>
-					<form th:action="@{/destroy}" method="post">
-						<input type="submit" value="Destroy Session"
-							class="btn btn-danger" />
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-=======
 	<!-- 	<div> -->
 	<!-- 		<h3>connecté en tant que :</h3> -->
 	<!-- 		<h3 th:text="${loginSession}">...</h3> -->
@@ -69,7 +23,7 @@
 		<div class="col-sm-4" id="formContent">
 			<form th:action="@{/connexion}" method="post" class="jumbotron">
 				<table>
-				<tr><img src="../static/images/logo.png" th:src="@{images/logo.png}" /></tr>
+				<tr><img src="../static/images/logo.png" th:src="@{/images/logo.png}" /></tr>
              <br>
 					<tr>
 						<td>
@@ -98,6 +52,6 @@
 	<!-- 		<form th:action="@{/destroy}" method="post"> -->
 	<!-- 			<input type="submit" value="Destroy Session" /> -->
 	<!-- 		</form> -->
->>>>>>> refs/heads/devDavid1
+
 </body>
 </html>
