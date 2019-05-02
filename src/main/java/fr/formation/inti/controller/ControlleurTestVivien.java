@@ -2,6 +2,7 @@ package fr.formation.inti.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import fr.formation.inti.dao.IEmployeDao;
 import fr.formation.inti.entities.Compte;
 import fr.formation.inti.entities.Conge;
 import fr.formation.inti.entities.Employe;
+import fr.formation.inti.services.CongeService;
 import fr.formation.inti.services.interfaces.ICongeService;
 
 @Controller
@@ -37,7 +39,7 @@ public class ControlleurTestVivien {
 	@Autowired
 	ICongeDao congeDao;
 	@Autowired
-	ICongeService congeService;
+	CongeService congeService;
 
 	//récupère la liste de tous les employés, la passe en attribut du modèle listeEmployes.html et l'affiche 
 	@GetMapping(value = { "/listeEmployes", "/allEmps" })
@@ -60,7 +62,7 @@ public class ControlleurTestVivien {
     public String creationrequest(@RequestParam(required=false, name="DateDeb") String DateDeb, @RequestParam(required=false, name="DateFin") String DateFin, HttpServletRequest request) throws ParseException {
         log.info("DateDeb = " + DateDeb + " | DateFin = " + DateFin);
         congeService.TestDeLaValiditeDeLaRequete(DateDeb, DateFin, request);
-        return "login";
+        return "redirect:/home/employe";
     }
 	
 	//page d'accueil du login
@@ -107,12 +109,17 @@ public class ControlleurTestVivien {
 		}
 		return "redirect:/home/employe";
 	}
-	
+
 	@PostMapping("/destroy")
 	public String destroySession(HttpServletRequest request) {
 		request.getSession().invalidate();
 		request.getSession().setAttribute("messageErreur", "Session invalidée");
 		return "redirect:/";
+	}
+	
+	@RequestMapping("/test")
+	public String test() {
+		return "testLayout";
 	}
 	
 	@RequestMapping("/home/employe")
@@ -176,11 +183,19 @@ public class ControlleurTestVivien {
 		model.addAttribute("congesRefuses", congesRefuses);
 		model.addAttribute("congesEnCours", congesEnCours);
 		
+		//bossView des congés de tous les employés
+		model.addAttribute("allAcceptes", congeService.getAllAcceptee());
+		
 		//notifications : les contre propositions de l'algorithme
 		log.info("récupération des demandes de congés de " + employeSession.getPrenom() + " " + employeSession.getNom());
 		List<Conge> propositions = congeDao.getPropositionByIdEmploye(employeSession.getIdEmploye());
 		model.addAttribute("propositions", propositions);
-
+		
+		//bossView des notifs : demandes en cours de tous les employes
+		Date date = new Date();
+		date.setTime(0);
+		model.addAttribute("allNotifs", congeDao.getCongeStartDate(date));
+		
 		return "homeBoss";
 	}
 }

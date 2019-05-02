@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <!-- <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" /> -->
 
-<link
-	href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
 <script
 	src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script
@@ -43,51 +43,62 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 
-
-
-<form th:action="@{/creationrequest}" method="post">
+<body>
 
 	<div class="container">
-		<div class="row">
-			<h2>Date de Début </h2>
-		</div>
-		<div class="row">
-			<div class='col-sm-6'>
-				<div class="form-group">
-					<div class='input-group date' id='datetimepicker1'>
-						<input type='text' class="form-control" name="DateDeb" /> <span
-							class="input-group-addon"> <span
-							class="glyphicon glyphicon-calendar"></span>
-						</span>
+		<h3>
+			connecté en tant que : <em th:text="${emp.prenom}">...</em> <em
+				th:text="${emp.nom}">...</em>
+		</h3>
+		<form th:action="@{/destroy}" method="post">
+			<input type="submit" value="Se déconnecter" />
+		</form>
+		<div class="jumbotron">
+			<form th:action="@{/creationrequest}" method="post">
+
+				<div class="container">
+					<div class="row">
+						<h2 style="color: black;">Date de Début</h2>
+					</div>
+					<div class="row">
+						<div class='col-sm-6'>
+							<div class="form-group">
+								<div class='input-group date' id='datetimepicker1'>
+									<input type='text' class="form-control" name="DateDeb" /> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
 
 
-	<div class="container">
-		<div class="row">
-			<h2>Date de Fin</h2>
-		</div>
-		<div class="row">
-			<div class='col-sm-6'>
-				<div class="form-group">
-					<div class='input-group date' id='datetimepicker2'>
-						<input type='text' class="form-control" name="DateFin"/> <span
-							class="input-group-addon"> <span
-							class="glyphicon glyphicon-calendar"></span>
-						</span>
+				<div class="container">
+					<div class="row">
+						<h2 style="color: black;">Date de Fin</h2>
+					</div>
+					<div class="row">
+						<div class='col-sm-6'>
+							<div class="form-group">
+								<div class='input-group date' id='datetimepicker2'>
+									<input type='text' class="form-control" name="DateFin" /> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
+
+				<div class="container">
+					<input type="submit" value="Demande" class="btn btn-danger" />
+				</div>
+
+			</form>
 		</div>
 	</div>
-
-<div class="container">
-	<input type="submit" value="Demande" class="btn btn-danger" />
-	</div>
-	
-</form>
 </body>
 </html>

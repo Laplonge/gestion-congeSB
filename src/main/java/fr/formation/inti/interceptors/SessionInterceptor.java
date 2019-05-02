@@ -45,6 +45,7 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
 			log.info("redirection vers localhost:8080/");
 			request.getSession().setAttribute("messageErreur", "Veuillez vous connecter.");
 	        response.sendRedirect(request.getContextPath() + "/");
+	        return false;
 		}
 //		String loginSession = (String) request.getSession().getAttribute("loginSession");
 //		if (loginSession == null) {

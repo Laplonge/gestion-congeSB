@@ -13,10 +13,17 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-<!-- <div th:replace="fragments/header :: header"></div> -->
+	<!-- <div th:replace="fragments/header :: header"></div> -->
 	<div class="container">
+		<h3>
+			connecté en tant que : <em th:text="${emp.prenom}">...</em> <em
+				th:text="${emp.nom}">...</em>
+		</h3>
+		<form th:action="@{/destroy}" method="post">
+			<input type="submit" value="Se déconnecter" />
+		</form>
 		<div class="jumbotron">
-			<h2>Données de l'Employé</h2>
+			<h2>Données personelles</h2>
 			<table class="employeData" border="1">
 				<tr>
 					<th>ID</th>
@@ -68,13 +75,28 @@
 		<div class="jumbotron">
 			<h2>Notification</h2>
 			<br>
-			<p>Contre-Propositions de l'algorithme magique "AlgoDePropo"
-				copyright Cédric 2019, pour résoudre les conflits de demande de
-				congés.</p>
+			<p>Contre-Propositions de l'algorithme "AlgoDePropo", pour
+				résoudre les conflits de demande de congés:</p>
 			<ul th:each="proposition : ${propositions}" class="list-group">
-				<li th:text="${proposition}"
-					class="list-group-item list-group-item-info">Contre-Proposition
-					de demande de Congés</li>
+				<li class="list-group-item list-group-item-info">
+					<table>
+						<tr>
+							<td><notif th:text="${proposition}">Contre-Proposition
+								de demande de Congés</notif></td>
+							<td></td>
+							<td>
+								<form>
+									<button type="button" class="btn btn-success">Accepter</button>
+								</form>
+							</td>
+							<td>
+								<form>
+									<button type="button" class="btn btn-danger">Refuser</button>
+								</form>
+							</td>
+						</tr>
+					</table>
+				</li>
 			</ul>
 		</div>
 	</div>

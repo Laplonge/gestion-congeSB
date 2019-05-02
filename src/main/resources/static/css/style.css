@@ -1,7 +1,23 @@
+.greentext {
+	color: green;
+}
+
+.redtext {
+	color: red;
+}
+
+.yellowtext {
+	color: orange;
+}
+
 /* BASIC */
 html {
 	background-color: #56baed;
 }
+.employeData {
+	border: solid darkgrey 3px;
+}
+	
 .employeData > tr,td,th {
 	padding: 10px;
 	text-align: center;

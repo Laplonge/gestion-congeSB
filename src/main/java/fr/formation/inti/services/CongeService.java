@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -296,5 +297,15 @@ public class CongeService implements ICongeService {
 	public String TestDeLaValiditeDeLaRequete(String debut, String fin) throws ParseException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public List<Conge> getAllAcceptee() {
+		List<Conge> allAcceptee  =new ArrayList();
+		for(Conge conge : congeDao.findAll()) {
+			if (conge.getStatutDeLaDemande().equals("acceptee")) {
+				allAcceptee.add(conge);
+			}
+		}
+		return allAcceptee;
 	}
 }
