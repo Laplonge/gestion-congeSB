@@ -6,7 +6,15 @@ html {
 	padding: 10px;
 	text-align: center;
 }
-
+.greentext{
+	color: green;
+}
+.redtext{
+	color: red;
+}
+.yellowtext{
+	color: orange;
+}
 body {
 	
 	font-family: "Poppins", sans-serif;

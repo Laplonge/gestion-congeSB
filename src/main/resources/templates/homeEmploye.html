@@ -13,7 +13,7 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-<!-- 	<div th:replace="fragments/header :: header"></div> -->
+	<!-- 	<div th:replace="fragments/header :: header"></div> -->
 	<div class="container">
 		<div id="info">
 			<div class="table-wrapper">
@@ -23,34 +23,34 @@
 							<h2>Données de l'Employé</h2>
 						</div>
 						<div class="col-sm-6">
-			<form th:action="@{/destroy}" method="post">
-				<input type="submit" value="Destroy Session" />
-			</form>
+							<form th:action="@{/destroy}" method="post">
+								<input type="submit" value="Destroy Session" />
+							</form>
 						</div>
 					</div>
 				</div>
- <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-						<th>ID</th>
-						<th>Prenom</th>
-						<th>Nom</th>
-						<th>Grade</th>
-						<th>Adresse Mail</th>
-						<th>N° de Téléphone</th>
-						<th>Jours de Congés Restants</th>
-					</tr>
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Prenom</th>
+							<th>Nom</th>
+							<th>Grade</th>
+							<th>Adresse Mail</th>
+							<th>N° de Téléphone</th>
+							<th>Jours de Congés Restants</th>
+						</tr>
 					</thead>
-					 <tbody>
-                    <tr>
-						<td th:utext="${emp.idEmploye}">...</td>
-						<td th:utext="${emp.prenom}">...</td>
-						<td th:utext="${emp.nom}">...</td>
-						<td th:utext="${emp.grade}">...</td>
-						<td th:utext="${emp.adresseMail}">...</td>
-						<td th:utext="${emp.numeroTelephone}">...</td>
-						<td th:utext="${emp.joursCongeRestant}">...</td>
-					</tr>
+					<tbody>
+						<tr>
+							<td th:utext="${emp.idEmploye}">...</td>
+							<td th:utext="${emp.prenom}">...</td>
+							<td th:utext="${emp.nom}">...</td>
+							<td th:utext="${emp.grade}">...</td>
+							<td th:utext="${emp.adresseMail}">...</td>
+							<td th:utext="${emp.numeroTelephone}">...</td>
+							<td th:utext="${emp.joursCongeRestant}">...</td>
+						</tr>
 				</table>
 			</div>
 
@@ -80,23 +80,42 @@
 								congé En Cours</li>
 						</ul>
 						<div>
-                        <form th:action="@{/employe}">
-                            <input type="submit" value="Faire une demande de congés" />
-                        </form>
-                    </div>
+							<form th:action="@{/employe}">
+								<input type="submit" value="Faire une demande de congés" />
+							</form>
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="jumbotron">
 						<h2>Notification</h2>
 						<br>
-						<p>Contre-Propositions de l'algorithme magique "AlgoDePropo"
+						<p>Contre-Propositions de l'algorithme "AlgoDePropo"
 							copyright Cédric 2019, pour résoudre les conflits de demande de
 							congés.</p>
 						<ul th:each="proposition : ${propositions}" class="list-group">
-							<li th:text="${proposition}"
-								class="list-group-item list-group-item-info">Contre-Proposition
-								de demande de Congés</li>
+							<li class="list-group-item list-group-item-info">Contre-Proposition
+								de demande de Congés
+								<table>
+									<tr>
+										<td><notif th:text="${proposition}">Demande de
+											congés en cours</notif></td>
+										<td></td>
+										<td>
+											<form th:action="@{/accepterProposition}" method="post">
+												<input type="hidden" th:value="${proposition.idConge}" name="propId" />
+												<button type="submit" class="btn btn-success">Accepter</button>
+											</form>
+										</td>
+										<td>
+											<form th:action="@{/refuserProposition}" method="post">
+												<input type="hidden" th:value="${proposition.idConge}" name="propId" />
+												<button type="submit" class="btn btn-danger">Refuser</button>
+											</form>
+										</td>
+									</tr>
+								</table>
+							</li>
 						</ul>
 					</div>
 				</div>

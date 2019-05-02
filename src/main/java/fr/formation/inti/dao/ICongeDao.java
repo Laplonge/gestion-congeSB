@@ -34,6 +34,8 @@ public interface ICongeDao extends JpaRepository<Conge, Integer> {
 	// Query qui permet d'afficher toutes les demandes faite par l'employé dans le but d'avoir un historique des demandes en cours, refusee et acceptee
 	@Query(nativeQuery = true, value = "SELECT * FROM Conge c WHERE c.id_employe = :id AND c.Statut_de_la_demande <> 'Proposition' ORDER BY c.Date_Demande ASC")
 	List<Conge> getHistoriqueByIdEmploye(@Param("id")Integer id);
+
+	
 	
 //	@Query(nativeQuery = true, value = "UPDATE employe\r\n" + 
 //			"SELECT * FROM Conge c WHERE c.id_employe = employe.ID_EMPLOYE"

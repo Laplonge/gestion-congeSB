@@ -39,7 +39,7 @@ public class CongeService implements ICongeService {
 	public void setEdao(ICongeDao congeDao) {
 		this.congeDao = congeDao;
 	}
-	
+
 	public Optional<Conge> findById(Integer id) {
 		return congeDao.findById(id);
 	}
@@ -65,13 +65,13 @@ public class CongeService implements ICongeService {
 	}
 
 	@CrossOrigin
-    @RequestMapping("/restCongeService/getPropositionByIdEmploye/{id}")
+	@RequestMapping("/restCongeService/getPropositionByIdEmploye/{id}")
 	public List<Conge> getPropositionByIdEmploye(@PathVariable("id") Integer id) {
 		return congeDao.getPropositionByIdEmploye(id);
 	}
-	
+
 	@CrossOrigin
-    @RequestMapping("/restCongeService/getHistoriqueByIdEmploye/{id}")
+	@RequestMapping("/restCongeService/getHistoriqueByIdEmploye/{id}")
 	public List<Conge> getHistoriqueByIdEmploye(@PathVariable("id") Integer id) {
 		return congeDao.getHistoriqueByIdEmploye(id);
 	}
@@ -90,7 +90,7 @@ public class CongeService implements ICongeService {
 		return jourdevac;
 	}
 
-	public Integer calculDureeVacances2(Date debut, Date fin) {
+	public Integer calculDureeVacances(Date debut, Date fin) {
 		int jourdevac = 0;
 
 		for (LocalDate datetest = ((java.sql.Date) debut).toLocalDate(); datetest
@@ -126,10 +126,10 @@ public class CongeService implements ICongeService {
 	 * Test la validité de la requete avant de pouvoir continuer dans la demande de
 	 * requete
 	 */
-	public String TestDeLaValiditeDeLaRequete(String debut, String fin, HttpServletRequest request) throws ParseException {
-		String html = "";
+	public void TestDeLaValiditeDeLaRequete(String debut, String fin, HttpServletRequest request)
+			throws ParseException {
 		boolean ReqOk = true;
-		
+
 		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 		java.util.Date date = dateformat.parse(debut);
 		java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
@@ -141,21 +141,20 @@ public class CongeService implements ICongeService {
 		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
 
 		for (Conge cong : getUnavailableDate(sqlcurrent)) {
-			html += "validation2";
+
 			// check if employee holidays is okay with the agree database request
 			if ((sqlStartDate.after(cong.getDateDebut()) && sqlStartDate.before(cong.getDateFin()))
 					|| (sqlFinDate.after(cong.getDateDebut()) && sqlFinDate.before(cong.getDateFin()))
 					|| (sqlStartDate.equals(cong.getDateDebut()) || sqlFinDate.equals(cong.getDateFin()))) {
-				html += ("Demande refuse1");
-				AlgoDePropo(sqlStartDate, sqlFinDate,request);
+
+				AlgoDePropoEmployee(sqlStartDate, sqlFinDate, request);
 				ReqOk = false;
 				break;
 			}
 			// check if agree database request is okay with the employee holidays
 			if ((cong.getDateDebut().after(sqlStartDate) && cong.getDateDebut().before(sqlFinDate))
 					|| (cong.getDateFin().after(sqlStartDate) && cong.getDateFin().before(sqlFinDate))) {
-				html += ("Demande refuse2");
-				AlgoDePropo(sqlStartDate, sqlFinDate,request);
+				AlgoDePropoEmployee(sqlStartDate, sqlFinDate, request);
 				ReqOk = false;
 				break;
 			}
@@ -165,15 +164,12 @@ public class CongeService implements ICongeService {
 			// Request okay, creation of a new request with on going statut"
 			// Actually just miss the trigger to commit employee and conge database
 			// Id employee will be set with the employee session
-			html += "Demande acceptee";
 			Conge demande = new Conge();
-			Employe emp = (Employe) request.getSession().getAttribute("employeSession");  
+			Employe emp = (Employe) request.getSession().getAttribute("employeSession");
 			demande.setEmploye(emp);
-			
-			emp.setJoursCongeRestant(emp.getJoursCongeRestant()-demande.getDureeJours());
 			demande.setDateDebut(sqlStartDate);
 			demande.setDateFin(sqlFinDate);
-			demande.setDureeJours(calculDureeVacances2(sqlStartDate, sqlFinDate));
+			demande.setDureeJours(calculDureeVacances(sqlStartDate, sqlFinDate));
 			demande.setDateDemande(sqlcurrent);
 			demande.setStatutDeLaDemande("en cours");
 			try {
@@ -182,20 +178,18 @@ public class CongeService implements ICongeService {
 			} catch (Exception e) {
 			}
 		}
-		return html;
 	}
 
-	public String AlgoDePropo(Date debut, Date fin, HttpServletRequest request) throws ParseException {
+	public void AlgoDePropoEmployee(Date debut, Date fin, HttpServletRequest request) throws ParseException {
 
-		String html = "";
 		Date current = new Date();
 		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
 		java.sql.Date sqldebut = new java.sql.Date(debut.getTime());
 		java.sql.Date sqlfin = new java.sql.Date(fin.getTime());
-		html += "test test2";
+
 		// Retourne la liste de toutes les dates déjà "acceptee" dans la base de donnée
 		List<Conge> Unav = getUnavailableDate(sqlcurrent);
-		html += "test test3";
+
 		// Test si la date peut inserer dans un interval entre les dates en bases de
 		// données
 		// Si c'est possible alors retourner une date de debut avec comme paramettre
@@ -204,13 +198,12 @@ public class CongeService implements ICongeService {
 		// Si non alors retourner une date de début avec comme paramettre
 		// date de debut de la dernière periode +1
 
-		html += "test test4";
 		for (int i = 0; i < Unav.size() - 1; i++) {
 			// Dans cette boucle, on test chaque interval contenu dans la liste Unav
 			// pour cela, on prend comme valeur de début, la valeur de la date de fin de la
 			// requete actuelle
 			// +1 et comme date de fin la date de début de la requette suivante
-			html += "test test";
+
 			// Calcul des periodes entre les différentes requetes validées
 			int interval = (int) ChronoUnit.DAYS.between(
 					((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),
@@ -227,85 +220,232 @@ public class CongeService implements ICongeService {
 				LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
 				// test si le premier jour de la demande de vacance est un dimanche ou un samedi
 				// Si c'est le cas on decale la date jusqu'a lundi
-//					while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
-//							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-//						datedebutprop.plusDays(1);
-//					}
+				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+					datedebutprop.plusDays(1);
+				}
 				TestDeLaValiditeDeLaRequete(datedebutprop.toString(), datefinprop.toString(), request);
 				break;
 			}
 
 			else if (i == Unav.size() - 2) {
+				// Test si on arrive à la dernière periode disponible
+				// Puis retourne une requete avec un interval identique juste après la dernière
+				// requête
 				LocalDate datedebutprop = ((java.sql.Date) Unav.get(Unav.size() - 1).getDateFin()).toLocalDate()
 						.plusDays(1);
 
-//					while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
-//							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-//						datedebutprop.plusDays(1);
-//					}
+				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+					datedebutprop.plusDays(1);
+				}
 
 				Conge demande = new Conge();
-				demande.setEmploye(employeDao.findById(1).get());
+				Employe emp = (Employe) request.getSession().getAttribute("employeSession");
+				demande.setEmploye(emp);
 				demande.setDateDebut(java.sql.Date.valueOf(datedebutprop));
 				LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
 				demande.setDateFin(java.sql.Date.valueOf(datedebutprop));
 				demande.setDureeJours(
-						calculDureeVacances2(java.sql.Date.valueOf(datedebutprop), java.sql.Date.valueOf(datefinprop)));
+						calculDureeVacances(java.sql.Date.valueOf(datedebutprop), java.sql.Date.valueOf(datefinprop)));
 				demande.setDateDemande(sqlcurrent);
 				demande.setStatutDeLaDemande("Proposition");
-				save(demande);
+				try {
+					save(demande);
+				} catch (Exception e) {
+				}
 				break;
 			}
 		}
-		// Test si on arrive à la dernière periode disponible
-		// Puis retourne une requete avec un interval identique juste après la dernière
-		// requête
-
-		return html;
 	}
 
-	
+	public void AlgoDePropoBoss(Conge conge) throws ParseException {
+
+		Date current = new Date();
+		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
+		java.sql.Date sqldebut = (java.sql.Date) conge.getDateDebut();
+		java.sql.Date sqlfin = (java.sql.Date) conge.getDateFin();
+
+		// Retourne la liste de toutes les dates déjà "acceptee" dans la base de donnée
+		List<Conge> Unav = getUnavailableDate(sqlcurrent);
+		// Test si la date peut inserer dans un interval entre les dates en bases de
+		// données
+		// Si c'est possible alors retourner une date de debut avec comme paramettre
+		// date de debut de la periode precedente +1
+
+		// Si non alors retourner une date de début avec comme paramettre
+		// date de debut de la dernière periode +1
+		for (int i = 0; i < Unav.size() - 1; i++) {
+			// Dans cette boucle, on test chaque interval contenu dans la liste Unav
+			// pour cela, on prend comme valeur de début, la valeur de la date de fin de la
+			// requete actuelle
+			// +1 et comme date de fin la date de début de la requette suivante
+
+			// Calcul des periodes entre les différentes requetes validées
+			int interval = (int) ChronoUnit.DAYS.between(
+					((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),
+					((java.sql.Date) Unav.get(i + 1).getDateDebut()).toLocalDate());
+			// Calcul de la periode de vacances demandée
+			int demvac = (int) ChronoUnit.DAYS.between((sqldebut.toLocalDate()), (sqlfin.toLocalDate()).plusDays(1));
+
+			// Test si la periode de la demande est compatible avec la duree l'interval
+			// entre les requetes
+			// Retourne une requete avec une proposition de date dans le premier interval
+			// possible
+			if (demvac <= interval) {
+				LocalDate datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1);
+
+				// test si le premier jour de la demande de vacance est un dimanche ou un samedi
+				// Si c'est le cas on decale la date jusqu'a lundi
+				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+					datedebutprop.plusDays(1);
+				}
+
+				conge.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+				LocalDate datedefin = datedebutprop.plusDays(demvac);
+				conge.setDateFin(java.sql.Date.valueOf(datedefin));
+				try {
+					save(conge);
+					TestDeLaValiditeDeLaRequete(conge);
+				} catch (Exception e) {
+				}
+				break;
+			}
+
+			else if (i == Unav.size() - 2) {
+				// Test si on arrive à la dernière periode disponible
+				// Puis retourne une requete avec un interval identique juste après la dernière
+				// requête
+				LocalDate datedebutprop = ((java.sql.Date) Unav.get(Unav.size() - 1).getDateFin()).toLocalDate()
+						.plusDays(1);
+
+				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+					datedebutprop.plusDays(1);
+				}
+
+				conge.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+				LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
+				conge.setDateFin(java.sql.Date.valueOf(datedebutprop));
+				conge.setDureeJours(
+						calculDureeVacances(java.sql.Date.valueOf(datedebutprop), java.sql.Date.valueOf(datefinprop)));
+				conge.setDateDemande(sqlcurrent);
+				conge.setStatutDeLaDemande("Proposition");
+				try {
+					save(conge);
+				} catch (Exception e) {
+				}
+				break;
+			}
+		}
+
+	}
+
 	public String TestDeConflitDemandeEnCours() {
 		Date current = new Date();
 		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
 		List<Conge> Conflit = getCongeStartDate(sqlcurrent);
 		int start = 1;
 		String html = "";
-		
-		for(Conge TestConf : Conflit) {
-			html += "Id Conge : " + TestConf.getIdConge() + "<br>" ;
-			for(int i=start; i<Conflit.size(); i++) {
-				
-				if ((TestConf.getDateDebut().after(Conflit.get(i).getDateDebut()) && TestConf.getDateDebut().before(Conflit.get(i).getDateFin()))
-						|| (TestConf.getDateFin().after(Conflit.get(i).getDateDebut()) && TestConf.getDateFin().before(Conflit.get(i).getDateFin()))
-						|| (TestConf.getDateDebut().equals(Conflit.get(i).getDateDebut()) || TestConf.getDateFin().equals(Conflit.get(i).getDateFin()))) {
-					html +="----------- Conflit avec la requete : " + Conflit.get(i).getIdConge() + "<br>";
+
+		for (Conge TestConf : Conflit) {
+			html += "Id Conge : " + TestConf.getIdConge() + "<br>";
+			for (int i = start; i < Conflit.size(); i++) {
+
+				if ((TestConf.getDateDebut().after(Conflit.get(i).getDateDebut())
+						&& TestConf.getDateDebut().before(Conflit.get(i).getDateFin()))
+						|| (TestConf.getDateFin().after(Conflit.get(i).getDateDebut())
+								&& TestConf.getDateFin().before(Conflit.get(i).getDateFin()))
+						|| (TestConf.getDateDebut().equals(Conflit.get(i).getDateDebut())
+								|| TestConf.getDateFin().equals(Conflit.get(i).getDateFin()))) {
+					html += "----------- Conflit avec la requete : " + Conflit.get(i).getIdConge() + "<br>";
 				}
 				// check if agree database request is okay with the employee holidays
-				else if ((Conflit.get(i).getDateDebut().after(TestConf.getDateDebut()) && Conflit.get(i).getDateDebut().before(TestConf.getDateFin()))
-						|| (Conflit.get(i).getDateFin().after(TestConf.getDateDebut()) && Conflit.get(i).getDateFin().before(TestConf.getDateFin()))) {
+				else if ((Conflit.get(i).getDateDebut().after(TestConf.getDateDebut())
+						&& Conflit.get(i).getDateDebut().before(TestConf.getDateFin()))
+						|| (Conflit.get(i).getDateFin().after(TestConf.getDateDebut())
+								&& Conflit.get(i).getDateFin().before(TestConf.getDateFin()))) {
 					html += "Conflit avec la requete : " + Conflit.get(i).getIdConge() + "<br>";
-				}	
-				
+				}
+
 			}
-		start++;	
+			start++;
 		}
 		return html;
 	}
 
-	@Override
-	public String TestDeLaValiditeDeLaRequete(String debut, String fin) throws ParseException {
-		// TODO Auto-generated method stub
-		return null;
+	public void ValidationDeLaDemandeEmployee(Conge conge) {
+		conge.setStatutDeLaDemande("en cours");
+
+		try {
+			save(conge);
+		} catch (Exception e) {
+
+		}
 	}
-	
+
+	public void ValidationDeLaDemandeBoss(Conge conge) {
+		Optional<Employe> emp = employeDao.findById(conge.getEmploye().getIdEmploye());
+		conge.setStatutDeLaDemande("acceptee");
+		conge.getEmploye().setJoursCongeRestant(conge.getEmploye().getJoursCongeRestant() - conge.getDureeJours());
+		try {
+			save(conge);
+			employeDao.save(emp.get());
+		} catch (Exception e) {
+
+		}
+	}
+
 	public List<Conge> getAllAcceptee() {
-		List<Conge> allAcceptee  =new ArrayList();
-		for(Conge conge : congeDao.findAll()) {
+		List<Conge> allAcceptee = new ArrayList();
+		for (Conge conge : congeDao.findAll()) {
 			if (conge.getStatutDeLaDemande().equals("acceptee")) {
 				allAcceptee.add(conge);
 			}
 		}
 		return allAcceptee;
+	}
+
+	@Override
+	public void TestDeLaValiditeDeLaRequete(Conge conge) throws ParseException {
+
+		boolean ReqOk = true;
+		java.sql.Date sqlStartDate = (java.sql.Date) conge.getDateDebut();
+		java.sql.Date sqlFinDate = (java.sql.Date) conge.getDateFin();
+
+		Date current = new Date();
+		java.sql.Date sqlcurrent = new java.sql.Date(current.getTime());
+
+		for (Conge cong : getUnavailableDate(sqlcurrent)) {
+			// check if employee holidays is okay with the agree database request
+			if ((sqlStartDate.after(cong.getDateDebut()) && sqlStartDate.before(cong.getDateFin()))
+					|| (sqlFinDate.after(cong.getDateDebut()) && sqlFinDate.before(cong.getDateFin()))
+					|| (sqlStartDate.equals(cong.getDateDebut()) || sqlFinDate.equals(cong.getDateFin()))) {
+				AlgoDePropoBoss(conge);
+				ReqOk = false;
+				break;
+			}
+			// check if agree database request is okay with the employee holidays
+			if ((cong.getDateDebut().after(sqlStartDate) && cong.getDateDebut().before(sqlFinDate))
+					|| (cong.getDateFin().after(sqlStartDate) && cong.getDateFin().before(sqlFinDate))) {
+				AlgoDePropoBoss(conge);
+				ReqOk = false;
+				break;
+			}
+		}
+
+		if (ReqOk == true) {
+			// Request okay, creation of a new request with "Proposition"
+			conge.setDateDebut(sqlStartDate);
+			conge.setDateFin(sqlFinDate);
+			conge.setDureeJours(calculDureeVacances(sqlStartDate, sqlFinDate));
+			conge.setDateDemande(sqlcurrent);
+			conge.setStatutDeLaDemande("Proposition");
+			try {
+				save(conge);
+			} catch (Exception e) {
+			}
+		}
 	}
 }

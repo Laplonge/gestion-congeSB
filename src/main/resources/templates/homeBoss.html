@@ -22,146 +22,172 @@
 							<h2>Données de l'Employé</h2>
 						</div>
 						<div class="col-sm-6">
-			<form th:action="@{/destroy}" method="post">
-				<input type="submit" value="Destroy Session" />
-			</form>
+							<form th:action="@{/destroy}" method="post">
+								<input type="submit" value="Destroy Session" />
+							</form>
 						</div>
 					</div>
 				</div>
- <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-					<th>ID</th>
-					<th>Prenom</th>
-					<th>Nom</th>
-					<th>Grade</th>
-					<th>Adresse Mail</th>
-					<th>N° de Téléphone</th>
-					<th>Jours de Congés Restants</th>
-				</tr>
-				<tr>
-					<td th:utext="${emp.idEmploye}">...</td>
-					<td th:utext="${emp.prenom}">...</td>
-					<td th:utext="${emp.nom}">...</td>
-					<td th:utext="${emp.grade}">...</td>
-					<td th:utext="${emp.adresseMail}">...</td>
-					<td th:utext="${emp.numeroTelephone}">...</td>
-					<td th:utext="${emp.joursCongeRestant}">...</td>
-				</tr>
-			</table>
-		</div>
-		
-		<div id="content" class="row">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Prenom</th>
+							<th>Nom</th>
+							<th>Grade</th>
+							<th>Adresse Mail</th>
+							<th>N° de Téléphone</th>
+							<th>Jours de Congés Restants</th>
+						</tr>
+						<tr>
+							<td th:utext="${emp.idEmploye}">...</td>
+							<td th:utext="${emp.prenom}">...</td>
+							<td th:utext="${emp.nom}">...</td>
+							<td th:utext="${emp.grade}">...</td>
+							<td th:utext="${emp.adresseMail}">...</td>
+							<td th:utext="${emp.numeroTelephone}">...</td>
+							<td th:utext="${emp.joursCongeRestant}">...</td>
+						</tr>
+				</table>
+			</div>
+
+			<div id="content" class="row">
 				<div class="col-sm-6">
-		<div class="jumbotron">
-			<h2>Demande de Congés</h2>
-			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#Cboss">Congés
-						de tous les employés (BOSS)</a></li>
-				<li><a data-toggle="tab" href="#Cemploye">Mes Congés
-						(EMPLOYE)</a></li>
-			</ul>
-			<div class="tab-content">
-				<div id="Cboss" class="tab-pane fade in active">
-					<h3 class="card-title">BOSS</h3>
-					<p>
-                        Demandes de congés validées de <em>tous</em> les employés.
-                    </p>
-                    <ul th:each="Accepte : ${allAcceptes}" class="list-group">
-                        <li th:text="${Accepte}"
-                            class="list-group-item list-group-item-success">Demande de
-                            congé Validé</li>
-                    </ul>
+					<div class="jumbotron">
+						<h2>Demande de Congés</h2>
+						<ul class="nav nav-tabs">
+							<li class="active"><a data-toggle="tab" href="#Cboss">Congés
+									de tous les employés (BOSS)</a></li>
+							<li><a data-toggle="tab" href="#Cemploye">Mes Congés
+									(EMPLOYE)</a></li>
+						</ul>
+						<div class="tab-content">
+							<div id="Cboss" class="tab-pane fade in active">
+								<h3 class="card-title">BOSS</h3>
+								<p>
+									Demandes de congés validées de <em>tous</em> les employés.
+								</p>
+								<ul th:each="Accepte : ${allAcceptes}" class="list-group">
+									<li th:text="${Accepte}"
+										class="list-group-item list-group-item-success">Demande
+										de congé Validé</li>
+								</ul>
+							</div>
+							<div id="Cemploye" class="tab-pane fade">
+								<h3 class="card-title">EMPLOYE</h3>
+								<p>
+									Mes demandes de congé : Validée en <em class="greentext">Vert</em>,
+									Refusée en <em class="redtext">Rouge</em>, En Cours de
+									Traitement en <em class="yellowtext">Jaune</em>
+								</p>
+
+								<ul th:each="congeAccepte : ${congesAcceptes}"
+									class="list-group">
+									<li th:text="${congeAccepte}"
+										class="list-group-item list-group-item-success">Demande
+										de congé Validé</li>
+								</ul>
+
+								<ul th:each="congeRefuse : ${congesRefuses}" class="list-group">
+									<li th:text="${congeRefuse}"
+										class="list-group-item list-group-item-danger">Demande de
+										congé Refusé</li>
+								</ul>
+
+								<ul th:each="congeEnCours : ${congesEnCours}" class="list-group">
+									<li th:text="${congeEnCours}"
+										class="list-group-item list-group-item-warning">Demande
+										de congé En Cours</li>
+								</ul>
+								<div>
+									<form th:action="@{/employe}">
+										<input type="submit" value="Faire une demande de congés" />
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div id="Cemploye" class="tab-pane fade">
-					<h3 class="card-title">EMPLOYE</h3>
-					<p>
-						Mes demandes de congé : Validée en <em class="greentext">Vert</em>,
-						Refusée en <em class="redtext">Rouge</em>, En Cours de Traitement
-						en <em class="yellowtext">Jaune</em>
-					</p>
+				<div class="col-sm-6">
+					<div class="jumbotron">
+						<h2>Notification</h2>
+						<ul class="nav nav-tabs">
+							<li class="active"><a data-toggle="tab" href="#Nboss">Congés
+									de tous les employés (BOSS)</a></li>
+							<li><a data-toggle="tab" href="#Nemploye">Mes Congés
+									(EMPLOYE)</a></li>
+						</ul>
+						<br>
+						<div class="tab-content">
+							<div id="Nboss" class="tab-pane fade in active">
 
-					<ul th:each="congeAccepte : ${congesAcceptes}" class="list-group">
-						<li th:text="${congeAccepte}"
-							class="list-group-item list-group-item-success">Demande de
-							congé Validé</li>
-					</ul>
+								<h3 class="card-title">BOSS</h3>
+								<p>
+									Demandes en cours de <em>tous</em> les employés.
+								</p>
+								<ul th:each="notif : ${allNotifs}" class="list-group">
+									<li class="list-group-item list-group-item-warning">
+										<table>
+											<tr>
+												<td><notif th:text="${notif}">Demande de congés
+													en cours</notif></td>
+												<td></td>
+												<td>
+													<form th:action="@{/bossAccepterProposition}" method="post">
+														<input type="hidden" th:value="${notif.idConge}"
+															name="propId" />
+														<button type="submit" class="btn btn-success">Accepter</button>
+													</form>
+												</td>
+												<td>
+													<form th:action="@{/bossRefuserProposition}" method="post">
+														<input type="hidden" th:value="${notif.idConge}"
+															name="propId" />
+														<button type="submit" class="btn btn-danger">Refuser</button>
+													</form>
+												</td>
+											</tr>
+										</table>
+									</li>
+								</ul>
+							</div>
+							<div id="Nemploye" class="tab-pane fade">
 
-					<ul th:each="congeRefuse : ${congesRefuses}" class="list-group">
-						<li th:text="${congeRefuse}"
-							class="list-group-item list-group-item-danger">Demande de
-							congé Refusé</li>
-					</ul>
+								<h3 class="card-title">EMPLOYE</h3>
+								<p>Contre-Propositions de l'algorithme magique "AlgoDePropo"
+									copyright Cédric 2019, pour résoudre les conflits de demande de
+									congés.</p>
+								<ul th:each="proposition : ${propositions}" class="list-group">
+									<li class="list-group-item list-group-item-info">Contre-Proposition
+										de demande de Congés
+										<table>
+											<tr>
+												<td><notif th:text="${proposition}">Demande de
+													congés en cours</notif></td>
+												<td></td>
+												<td>
+													<form th:action="@{/accepterProposition}" method="post">
+														<input type="hidden" th:value="${proposition.idConge}"
+															name="propId" />
+														<button type="submit" class="btn btn-success">Accepter</button>
+													</form>
+												</td>
+												<td>
+													<form th:action="@{/refuserProposition}" method="post">
+														<input type="hidden" th:value="${proposition.idConge}"
+															name="propId" />
+														<button type="submit" class="btn btn-danger">Refuser</button>
+													</form>
+												</td>
+											</tr>
+										</table>
+									</li>
+								</ul>
 
-					<ul th:each="congeEnCours : ${congesEnCours}" class="list-group">
-						<li th:text="${congeEnCours}"
-							class="list-group-item list-group-item-warning">Demande de
-							congé En Cours</li>
-					</ul>
-					<div>
-                        <form th:action="@{/employe}">
-                            <input type="submit" value="Faire une demande de congés" />
-                        </form>
-                    </div>
-				</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-sm-6">
-		<div class="jumbotron">
-			<h2>Notification</h2>
-			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#Nboss">Congés
-						de tous les employés (BOSS)</a></li>
-				<li><a data-toggle="tab" href="#Nemploye">Mes Congés
-						(EMPLOYE)</a></li>
-			</ul>
-			<br>
-			<div class="tab-content">
-				<div id="Nboss" class="tab-pane fade in active">
-
-					<h3 class="card-title">BOSS</h3>
-					<p>
-                        Demandes en cours de <em>tous</em> les employés.
-                    </p>
-                    <ul th:each="notif : ${allNotifs}" class="list-group">
-                        <li class="list-group-item list-group-item-warning">
-                            <table>
-                                <tr>
-                                    <td><notif th:text="${notif}">Demande de congés en
-                                        cours</notif></td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                        <form>
-                                            <button type="button" class="btn btn-success">Accepter</button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        <form>
-                                            <button type="button" class="btn btn-danger">Refuser</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
-                    </ul>
-				</div>
-				<div id="Nemploye" class="tab-pane fade">
-
-					<h3 class="card-title">EMPLOYE</h3>
-					<p>Contre-Propositions de l'algorithme magique "AlgoDePropo"
-						copyright Cédric 2019, pour résoudre les conflits de demande de
-						congés.</p>
-					<ul th:each="proposition : ${propositions}" class="list-group">
-						<li th:text="${proposition}"
-							class="list-group-item list-group-item-info">Contre-Proposition
-							de demande de Congés</li>
-					</ul>
-				</div>
-				</div>
-			</div>
-		</div>
-	</div>
 </body>
 </html>

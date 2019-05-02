@@ -25,7 +25,7 @@ public class Conge implements java.io.Serializable {
 			traitement = ", traitée le " + dateTraitement + ".";
 		}
 		return "Du " + dateDebut + " au " + dateFin + ". nombre de jours : " + dureeJours
-				+ " | demandée le " + dateDemande + traitement;
+				+ " | demandée le " + dateDemande + traitement + " par l'employé " + employe.getPrenom() + " " + employe.getNom();
 	}
 
 	private static final long serialVersionUID = 1L;

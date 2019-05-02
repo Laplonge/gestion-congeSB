@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -190,4 +191,42 @@ public class ControlleurTestVivien {
         congeService.TestDeLaValiditeDeLaRequete(DateDeb, DateFin, request);
         return "redirect:/home/employe";
     }
+	
+	@PostMapping(value= "/accepterProposition")
+    public String accepterProposition(@RequestParam("propId") String propId) {
+		Conge proposition = congeDao.findById(Integer.parseInt(propId)).get();
+		log.info("proposition acceptee");
+		log.info(proposition);
+		congeService.ValidationDeLaDemandeEmployee(proposition);
+        return "redirect:/home/employe";
+    }	
+	@PostMapping(value= "/refuserProposition")
+    public String refuserProposition(@RequestParam("propId") String propId) {
+		Conge proposition = congeDao.findById(Integer.parseInt(propId)).get();
+		log.info("proposition refusee");
+		log.info(proposition);
+		congeService.delete(proposition);
+        return "redirect:/home/employe";
+	}
+	@PostMapping(value= "/bossAccepterProposition")
+    public String bossAccepterProposition(@RequestParam("propId") String propId) {
+		Conge demande = congeDao.findById(Integer.parseInt(propId)).get();
+		log.info("demande acceptée");
+		log.info(demande);
+		congeService.ValidationDeLaDemandeBoss(demande);
+        return "redirect:/home/employe";
+	}
+	@PostMapping(value= "/bossRefuserProposition")
+    public String bossRefuserProposition(@RequestParam("propId") String propId) {
+		Conge demande = congeDao.findById(Integer.parseInt(propId)).get();
+		log.info("demande refusee");
+		log.info(demande);
+		try {
+			congeService.AlgoDePropoBoss(demande);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        return "redirect:/home/employe";
+	}
+	
 }
