@@ -1,56 +1,104 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+<!-- <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" /> -->
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+<script
+	src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script
+	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.es.min.js"></script>
+<script>
+	$(function() {
+		$('#datetimepicker1').datepicker({
+			format : "yyyy-mm-dd",
+			language : "fr",
+			autoclose : true,
+			todayHighlight : true
+		});
+	});
+</script>
+<script>
+	$(function() {
+		$('#datetimepicker2').datepicker({
+			format : "yyyy-mm-dd",
+			language : "fr",
+			autoclose : true,
+			todayHighlight : true
+		});
+	});
+</script>
+
 <head>
 <meta charset="UTF-8" />
 <title>Données de l'employé connecté</title>
 <link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-	crossorigin="anonymous">
-
-<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
+
 <body>
-	<h1>données de l'employé</h1>
-	<br />
-	<div>
-		<table border="1">
-			<tr>
-				<th>ID</th>
-				<td th:utext="${emp.idEmploye}">...</td>
-			</tr>
-			<tr>
-				<th>Prenom</th>
-				<td th:utext="${emp.prenom}">...</td>
-			</tr>
-			<tr>
-				<th>Nom</th>
-				<td th:utext="${emp.nom}">...</td>
-			</tr>
-			<tr>
-				<th>grade</th>
-				<td th:utext="${emp.grade}">...</td>
-			</tr>
-			<tr>
-				<th>jours de congés restants</th>
-				<td th:utext="${emp.joursCongeRestant}">...</td>
-			</tr>
-			<tr>
-				<th>adresse mail</th>
-				<td th:utext="${emp.adresseMail}">...</td>
-			</tr>
-			<tr>
-				<th>numéro de téléphone</th>
-				<td th:utext="${emp.numeroTelephone}">...</td>
-			</tr>
-			<tr>
-				<th>manager</th>
-				<td th:utext="${emp.manager}">...</td>
-			</tr>
-			<tr>
-				<td colspan="2">TODO : photo</td>
-			</tr>
-		</table>
+
+	<div class="container">
+		<h3>
+			connecté en tant que : <em th:text="${emp.prenom}">...</em> <em
+				th:text="${emp.nom}">...</em>
+		</h3>
+		<form th:action="@{/destroy}" method="post">
+			<input type="submit" value="Se déconnecter" />
+		</form>
+		<div class="jumbotron">
+			<form th:action="@{/creationrequest}" method="post">
+
+				<div class="container">
+					<div class="row">
+						<h2 style="color: black;">Date de Début</h2>
+					</div>
+					<div class="row">
+						<div class='col-sm-6'>
+							<div class="form-group">
+								<div class='input-group date' id='datetimepicker1'>
+									<input type='text' class="form-control" name="DateDeb" /> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="container">
+					<div class="row">
+						<h2 style="color: black;">Date de Fin</h2>
+					</div>
+					<div class="row">
+						<div class='col-sm-6'>
+							<div class="form-group">
+								<div class='input-group date' id='datetimepicker2'>
+									<input type='text' class="form-control" name="DateFin" /> <span
+										class="input-group-addon"> <span
+										class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="container">
+					<input type="submit" value="Demande" class="btn btn-danger" />
+				</div>
+
+			</form>
+		</div>
 	</div>
 </body>
 </html>

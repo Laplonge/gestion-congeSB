@@ -18,23 +18,17 @@
 		<div class="col-sm-4"></div>
 		<div class="col-sm-4" id="formContent">
 			<form th:action="@{/connexion}" method="post" class="jumbotron">
+				<img src="../static/images/logo.png" th:src="@{/images/logo.png}" />
+				<span th:if="${loginSession != 'personne'}">
+				<h4>connecté en tant que :
+						<em th:text="${loginSession}">...</em></h4></span>
 				<table>
-					<tr>
-						<h3>
-							connecté en tant que : <em th:text="${loginSession}">...</em>
-						</h3>
-					</tr>
-					<tr>
-						<img src="../static/images/logo.png" th:src="@{/images/logo.png}" />
-					</tr>
-					<br>
-
 					<tr>
 						<td><input type="text" id="login" name="login"
 							placeholder="login"></input></td>
 					</tr>
 					<tr>
-						<td><input type="text" id="password" name="motDePasse"
+						<td><input type="password" id="password" name="motDePasse"
 							placeholder="mot de passe"></input></td>
 					</tr>
 					<tr>
@@ -43,8 +37,9 @@
 				</table>
 			</form>
 			<tr>
+			<span th:if="${loginSession != 'personne'}">
 				<form th:action="@{/destroy}" method="post">
-					<input type="submit" value="Destroy Session" />
+					<input type="submit" value="Destroy Session" /></span>
 				</form>
 			</tr>
 			<div>

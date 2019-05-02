@@ -57,6 +57,25 @@ h2 {
 	border-radius: 0 0 10px 10px;
 }
 
+#info, #content {padding:1px 0;}
+
+#info
+{
+
+text-align:center;
+}
+
+#content
+{
+max-with:960px;
+margin:auto;
+}
+
+#row {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
 /* TABS */
 h2.inactive {
 	color: #cccccc;
@@ -131,6 +150,35 @@ input[type=text]:focus {
 }
 
 input[type=text]:placeholder {
+	color: #cccccc;
+}
+input[type=password] {
+	background-color: #f6f6f6;
+	border: none;
+	color: #0d0d0d;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 5px;
+	width: 85%;
+	border: 2px solid #f6f6f6;
+	-webkit-transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-ms-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	transition: all 0.5s ease-in-out;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+}
+
+input[type=password]:focus {
+	background-color: #fff;
+	border-bottom: 2px solid #5fbae9;
+}
+
+input[type=password]:placeholder {
 	color: #cccccc;
 }
 
@@ -258,11 +306,7 @@ to {
 }
 
 
-.row {
-	position: relative;
-	top: 50%;
-	transform: translateY(-50%);
-}
+
 
 /* Simple CSS3 Fade-in Animation */
 .underlineHover:after {
@@ -283,6 +327,65 @@ to {
 .underlineHover:hover:after {
 	width: 100%;
 }
+.table-wrapper {
+	position: relative;
+        background: #fff;
+        padding: 20px 25px;
+        margin: 30px 0;
+		border-radius: 3px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    }
+	.table-title {        
+		padding-bottom: 15px;
+		background: #435d7d;
+		color: #fff;
+		padding: 16px 30px;
+		margin: -20px -25px 10px;
+		border-radius: 3px 3px 0 0;
+    }
+    .table-title h2 {
+		margin: 5px 0 0;
+		font-size: 24px;
+	}
+	    table.table tr th, table.table tr td {
+        border-color: #e9e9e9;
+		padding: 12px 15px;
+		vertical-align: middle;
+    }
+	table.table tr th:first-child {
+		width: 60px;
+	}
+	table.table tr th:last-child {
+		width: 100px;
+	}
+    table.table-striped tbody tr:nth-of-type(odd) {
+    	background-color: #fcfcfc;
+	}
+	table.table-striped.table-hover tbody tr:hover {
+		background: #f5f5f5;
+	}
+    table.table th i {
+        font-size: 13px;
+        margin: 0 5px;
+        cursor: pointer;
+    }	
+    table.table td:last-child i {
+		opacity: 0.9;
+		font-size: 22px;
+        margin: 0 5px;
+    }
+	table.table td a {
+		font-weight: bold;
+		color: #566787;
+		display: inline-block;
+		text-decoration: none;
+		outline: none !important;
+	}
+	table.table td a:hover {
+		color: #2196F3;
+	}
+
+
 
 /* OTHERS */
 *:focus {
