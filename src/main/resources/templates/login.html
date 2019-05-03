@@ -13,7 +13,6 @@
 	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-
 	<div class="row">
 		<div class="col-sm-4"></div>
 		<div class="col-sm-4" id="formContent">
@@ -39,7 +38,7 @@
 			<tr>
 			<span th:if="${loginSession != 'personne'}">
 				<form th:action="@{/destroy}" method="post">
-					<input type="submit" value="Destroy Session" /></span>
+					<input type="submit" value="Se Déconnecter" /></span>
 				</form>
 			</tr>
 			<div>

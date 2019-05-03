@@ -47,9 +47,11 @@ public class ControlleurTestVivien {
         model.addAttribute("employes", employeDao.findAll());
         return "listeEmployes";
     }
-	
-	@PostMapping("/addEmploye")
-	//TODO
+
+	@RequestMapping("/calendrier")
+    public String calendrier() {
+		return "calendrier";
+    }
 	
 	@RequestMapping(value = { "/employe"})
     public String donneesEmploye(Model model, HttpServletRequest request) {

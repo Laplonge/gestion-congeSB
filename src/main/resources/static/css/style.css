@@ -2,6 +2,10 @@
 html {
 	background-color: #56baed;
 }
+.calendrier > tr,td,th {
+	font-size: 20;
+	margin: auto;
+}
 .employeData > tr,td,th {
 	padding: 10px;
 	text-align: center;

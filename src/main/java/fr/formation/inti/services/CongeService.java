@@ -198,63 +198,93 @@ public class CongeService implements ICongeService {
 		// Si non alors retourner une date de début avec comme paramettre
 		// date de debut de la dernière periode +1
 
-		for (int i = 0; i < Unav.size() - 1; i++) {
-			// Dans cette boucle, on test chaque interval contenu dans la liste Unav
-			// pour cela, on prend comme valeur de début, la valeur de la date de fin de la
-			// requete actuelle
-			// +1 et comme date de fin la date de début de la requette suivante
+		if (Unav.size() == 1) {
+			LocalDate datedebutprop = ((java.sql.Date) Unav.get(0).getDateFin()).toLocalDate().plusDays(1);
 
-			// Calcul des periodes entre les différentes requetes validées
-			int interval = (int) ChronoUnit.DAYS.between(
-					((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),
-					((java.sql.Date) Unav.get(i + 1).getDateDebut()).toLocalDate());
-			// Calcul de la periode de vacances demandée
 			int demvac = (int) ChronoUnit.DAYS.between((sqldebut.toLocalDate()), (sqlfin.toLocalDate()).plusDays(1));
 
-			// Test si la periode de la demande est compatible avec la duree l'interval
-			// entre les requetes
-			// Retourne une requete avec une proposition de date dans le premier interval
-			// possible
-			if (demvac <= interval) {
-				LocalDate datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1);
-				LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
-				// test si le premier jour de la demande de vacance est un dimanche ou un samedi
-				// Si c'est le cas on decale la date jusqu'a lundi
-				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
-						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-					datedebutprop.plusDays(1);
-				}
-				TestDeLaValiditeDeLaRequete(datedebutprop.toString(), datefinprop.toString(), request);
-				break;
+			while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+					|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+				datedebutprop = datedebutprop.plusDays(1);
 			}
 
-			else if (i == Unav.size() - 2) {
-				// Test si on arrive à la dernière periode disponible
-				// Puis retourne une requete avec un interval identique juste après la dernière
-				// requête
-				LocalDate datedebutprop = ((java.sql.Date) Unav.get(Unav.size() - 1).getDateFin()).toLocalDate()
-						.plusDays(1);
+			Conge demande = new Conge();
+			Employe emp = (Employe) request.getSession().getAttribute("employeSession");
+			demande.setEmploye(emp);
+			demande.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+			LocalDate datefinprop = ((java.sql.Date) Unav.get(0).getDateFin()).toLocalDate().plusDays(demvac);
+			demande.setDateFin(java.sql.Date.valueOf(datedebutprop));
+			demande.setDureeJours(
+					calculDureeVacances(java.sql.Date.valueOf(datedebutprop), java.sql.Date.valueOf(datefinprop)));
+			demande.setDateDemande(sqlcurrent);
+			demande.setStatutDeLaDemande("Proposition");
+			try {
+				save(demande);
+			} catch (Exception e) {
+			}
+		}
 
-				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
-						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-					datedebutprop.plusDays(1);
+		else {
+			for (int i = 0; i < Unav.size() - 1; i++) {
+				// Dans cette boucle, on test chaque interval contenu dans la liste Unav
+				// pour cela, on prend comme valeur de début, la valeur de la date de fin de la
+				// requete actuelle
+				// +1 et comme date de fin la date de début de la requette suivante
+
+				// Calcul des periodes entre les différentes requetes validées
+				int interval = (int) ChronoUnit.DAYS.between(
+						((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1),
+						((java.sql.Date) Unav.get(i + 1).getDateDebut()).toLocalDate());
+				// Calcul de la periode de vacances demandée
+				int demvac = (int) ChronoUnit.DAYS.between((sqldebut.toLocalDate()),
+						(sqlfin.toLocalDate()).plusDays(1));
+
+				// Test si la periode de la demande est compatible avec la duree l'interval
+				// entre les requetes
+				// Retourne une requete avec une proposition de date dans le premier interval
+				// possible
+				if (demvac <= interval) {
+					LocalDate datedebutprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(1);
+					LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
+					// test si le premier jour de la demande de vacance est un dimanche ou un samedi
+					// Si c'est le cas on decale la date jusqu'a lundi
+					while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+						datedebutprop.plusDays(1);
+					}
+					TestDeLaValiditeDeLaRequete(datedebutprop.toString(), datefinprop.toString(), request);
+					break;
 				}
 
-				Conge demande = new Conge();
-				Employe emp = (Employe) request.getSession().getAttribute("employeSession");
-				demande.setEmploye(emp);
-				demande.setDateDebut(java.sql.Date.valueOf(datedebutprop));
-				LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
-				demande.setDateFin(java.sql.Date.valueOf(datedebutprop));
-				demande.setDureeJours(
-						calculDureeVacances(java.sql.Date.valueOf(datedebutprop), java.sql.Date.valueOf(datefinprop)));
-				demande.setDateDemande(sqlcurrent);
-				demande.setStatutDeLaDemande("Proposition");
-				try {
-					save(demande);
-				} catch (Exception e) {
+				else if (i == Unav.size() - 2) {
+					// Test si on arrive à la dernière periode disponible
+					// Puis retourne une requete avec un interval identique juste après la dernière
+					// requête
+					LocalDate datedebutprop = ((java.sql.Date) Unav.get(Unav.size() - 1).getDateFin()).toLocalDate()
+							.plusDays(1);
+
+					while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+							|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+						datedebutprop = datedebutprop.plusDays(1);
+					}
+
+					Conge demande = new Conge();
+					Employe emp = (Employe) request.getSession().getAttribute("employeSession");
+					demande.setEmploye(emp);
+					demande.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+					LocalDate datefinprop = ((java.sql.Date) Unav.get(i).getDateFin()).toLocalDate().plusDays(demvac);
+					demande.setDateFin(java.sql.Date.valueOf(datedebutprop));
+					demande.setDureeJours(calculDureeVacances(java.sql.Date.valueOf(datedebutprop),
+							java.sql.Date.valueOf(datefinprop)));
+					demande.setDateDemande(sqlcurrent);
+					demande.setStatutDeLaDemande("Proposition");
+					try {
+						save(demande);
+					} catch (Exception e) {
+					}
+					break;
 				}
-				break;
+
 			}
 		}
 	}
@@ -273,6 +303,32 @@ public class CongeService implements ICongeService {
 		// Si c'est possible alors retourner une date de debut avec comme paramettre
 		// date de debut de la periode precedente +1
 
+		
+		if (Unav.size() == 1) {
+			LocalDate datedebutprop = ((java.sql.Date) Unav.get(0).getDateFin()).toLocalDate().plusDays(1);
+
+			int demvac = (int) ChronoUnit.DAYS.between((sqldebut.toLocalDate()), (sqlfin.toLocalDate()).plusDays(1));
+
+			while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
+					|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
+				datedebutprop.plusDays(1);
+			}
+
+			Conge demande = new Conge();
+			Employe emp = conge.getEmploye();
+			demande.setEmploye(emp);
+			demande.setDateDebut(java.sql.Date.valueOf(datedebutprop));
+			LocalDate datefinprop = ((java.sql.Date) Unav.get(0).getDateFin()).toLocalDate().plusDays(demvac);
+			demande.setDateFin(java.sql.Date.valueOf(datedebutprop));
+			demande.setDureeJours(
+					calculDureeVacances(java.sql.Date.valueOf(datedebutprop), java.sql.Date.valueOf(datefinprop)));
+			demande.setDateDemande(sqlcurrent);
+			demande.setStatutDeLaDemande("Proposition");
+			try {
+				save(demande);
+			} catch (Exception e) {
+			}
+		}
 		// Si non alors retourner une date de début avec comme paramettre
 		// date de debut de la dernière periode +1
 		for (int i = 0; i < Unav.size() - 1; i++) {
@@ -299,7 +355,7 @@ public class CongeService implements ICongeService {
 				// Si c'est le cas on decale la date jusqu'a lundi
 				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
 						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-					datedebutprop.plusDays(1);
+					datedebutprop = datedebutprop.plusDays(1);
 				}
 
 				conge.setDateDebut(java.sql.Date.valueOf(datedebutprop));
@@ -322,7 +378,7 @@ public class CongeService implements ICongeService {
 
 				while ((datedebutprop.getDayOfWeek() == DayOfWeek.SATURDAY
 						|| datedebutprop.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-					datedebutprop.plusDays(1);
+					datedebutprop = datedebutprop.plusDays(1);
 				}
 
 				conge.setDateDebut(java.sql.Date.valueOf(datedebutprop));
